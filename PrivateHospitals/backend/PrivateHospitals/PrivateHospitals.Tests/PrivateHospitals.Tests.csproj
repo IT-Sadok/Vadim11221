@@ -36,9 +36,4 @@
       <ProjectReference Include="..\PrivateHospitals.Infrastructure\PrivateHospitals.Infrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="ServicesTests\Doctor\" />
-      <Folder Include="ServicesTests\Patient\" />
-    </ItemGroup>
-
 </Project>

@@ -12,8 +12,8 @@ using PrivateHospitals.Data.Data;
 namespace PrivateHospitals.Data.Migrations
 {
     [DbContext(typeof(HospitalDbContext))]
-    [Migration("20241105165747_TestForRegister")]
-    partial class TestForRegister
+    [Migration("20241111181815_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,15 +53,15 @@ namespace PrivateHospitals.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ecdecada-260e-49d2-9860-ba00a7f8448c",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
+                            Id = "f3d8511a-d202-49a1-8583-1133bd25bc67",
+                            Name = "Doctor",
+                            NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "59807734-ba8d-44c3-a198-0001b7d0e960",
-                            Name = "User",
-                            NormalizedName = "USER"
+                            Id = "07f9a66d-d6d0-401d-8697-e3dd134935a2",
+                            Name = "Patient",
+                            NormalizedName = "PATIENT"
                         });
                 });
 

@@ -50,13 +50,13 @@ namespace PrivateHospitals.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8f7478a9-e568-4a53-8d70-9750225f4175",
+                            Id = "f3d8511a-d202-49a1-8583-1133bd25bc67",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "5b16bccc-6ecb-4276-abab-a784adc1de67",
+                            Id = "07f9a66d-d6d0-401d-8697-e3dd134935a2",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });
