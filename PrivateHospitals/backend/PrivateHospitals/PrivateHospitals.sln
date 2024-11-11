@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateHospitals.API", "Pri
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateHospitals.Core", "PrivateHospitals.Core\PrivateHospitals.Core.csproj", "{664FA7DE-84B5-4680-90BF-E4607812C39D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateHospitals.Data", "PrivateHospitals.Data\PrivateHospitals.Data.csproj", "{EB644953-D27F-44B6-ACA9-931CC28BE137}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateHospitals.Infrastructure", "PrivateHospitals.Infrastructure\PrivateHospitals.Infrastructure.csproj", "{EB644953-D27F-44B6-ACA9-931CC28BE137}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateHospitals.Application", "PrivateHospitals.Application\PrivateHospitals.Application.csproj", "{08E2153A-B109-4BDB-ADB4-4B691020BF01}"
 EndProject

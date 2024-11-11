@@ -33,7 +33,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\PrivateHospitals.Application\PrivateHospitals.Application.csproj" />
-      <ProjectReference Include="..\PrivateHospitals.Data\PrivateHospitals.Data.csproj" />
+      <ProjectReference Include="..\PrivateHospitals.Infrastructure\PrivateHospitals.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="ServicesTests\Doctor\" />
+      <Folder Include="ServicesTests\Patient\" />
     </ItemGroup>
 
 </Project>

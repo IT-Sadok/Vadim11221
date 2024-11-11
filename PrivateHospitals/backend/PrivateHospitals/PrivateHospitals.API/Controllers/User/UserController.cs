@@ -1,21 +1,43 @@
 using Microsoft.AspNetCore.Mvc;
+using PrivateHospitals.Application.Dtos.Doctor;
+using PrivateHospitals.Application.Dtos.Patient;
 using PrivateHospitals.Application.Interfaces.User;
 using LoginDto = PrivateHospitals.Application.Dtos.User.LoginDto;
-using RegisterDto = PrivateHospitals.Application.Dtos.User.RegisterDto;
 
 namespace PrivateHospitals.API.Controllers.User;
 
 [Route("api/user")]
 [ApiController]
-public class UserController: ControllerBase
+public class UserController(
+    IUserService userService
+): ControllerBase
 {
-    private readonly IUserService _userService;
+    private readonly IUserService _userService = userService;
 
-    public UserController(IUserService userService)
+    [HttpPost("RegisterDoctor")]
+    public async Task<IActionResult> RegisterDoctor([FromBody] RegisterDoctorDto registerDoctorDto)
     {
-        _userService = userService;
+        var result = await _userService.RegisterDoctorAsync(registerDoctorDto);
+        if (!result.Success)
+        {
+            return BadRequest(result.Errors);
+        }
+        
+        return Ok(result.Data);
     }
 
+    [HttpPost("RegisterPatient")]
+    public async Task<IActionResult> RegisterPatient([FromBody] RegisterPatientDto registerPatientDto)
+    {
+        var result = await _userService.RegisterPatientAsync(registerPatientDto);
+        if (!result.Success)
+        {
+            return BadRequest(result.Errors);
+        }
+
+        return Ok(result.Data);
+    }
+    
     [HttpPost("LoginUser")]
     public async Task<IActionResult> LoginUser([FromBody] LoginDto loginDto)
     {

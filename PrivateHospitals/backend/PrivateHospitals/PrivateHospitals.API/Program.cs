@@ -1,4 +1,7 @@
+using System.Configuration;
+using FluentAssertions;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,23 +10,16 @@ using PrivateHospitals.Application.Dtos.Doctor;
 using PrivateHospitals.Application.Dtos.Patient;
 using PrivateHospitals.Application.Dtos.User;
 using PrivateHospitals.Application.Interfaces;
-using PrivateHospitals.Application.Interfaces.Doctor;
-using PrivateHospitals.Application.Interfaces.Patient;
 using PrivateHospitals.Application.Interfaces.User;
+using PrivateHospitals.Application.Profiles;
 using PrivateHospitals.Application.Services;
-using PrivateHospitals.Application.Services.Doctor;
-using PrivateHospitals.Application.Services.Patient;
 using PrivateHospitals.Application.Services.User;
 using PrivateHospitals.Application.Validations.User;
 using PrivateHospitals.Application.Validators.Doctor;
 using PrivateHospitals.Application.Validators.Patient;
 using PrivateHospitals.Core.Models;
 using PrivateHospitals.Data.Data;
-using PrivateHospitals.Data.Interfaces.Doctor;
-using PrivateHospitals.Data.Interfaces.Patient;
 using PrivateHospitals.Data.Interfaces.User;
-using PrivateHospitals.Data.Repositories.Doctor;
-using PrivateHospitals.Data.Repositories.Patient;
 using PrivateHospitals.Data.Repositories.User;
 
 
@@ -31,7 +27,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<RegisterDoctorDtoValidator>());;
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -74,24 +70,16 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-builder.Services.AddScoped<IPatientService, PatientService>();
-builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
-builder.Services.AddScoped<IDoctorService, DoctorService>();
+
+builder.Services.AddAutoMapper(typeof(MapProfile).Assembly);
 
 
-//Validators
-builder.Services.AddScoped<IValidator<RegisterDto>, RegisterDtoValidator>();
-builder.Services.AddScoped<IValidator<LoginDto>, LoginDtoValidator>();
-builder.Services.AddScoped<IValidator<RegisterPatientDto>, RegisterPatientDtoValidator>();
-builder.Services.AddScoped<IValidator<RegisterDoctorDto>, RegisterDoctorDtoValidator>();
 
-
-// builder.Services.AddScoped<IPasswordHasher<PrivateHospitals.Core.Models.Patient>, PasswordHasher<PrivateHospitals.Core.Models.Patient>>();
 
 var app = builder.Build();
 
@@ -109,12 +97,8 @@ app.UseAuthorization();
 
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseMiddleware<ValidationMiddleware>();
 
-app.UseCors(x => {
-    x.WithHeaders().AllowAnyHeader();
-    x.WithOrigins("http://localhost:3000");
-    x.WithMethods().AllowAnyMethod();
-});
+app.MapControllers();
 
 app.Run();

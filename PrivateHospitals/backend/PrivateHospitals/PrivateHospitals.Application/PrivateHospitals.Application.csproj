@@ -7,12 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PrivateHospitals.Data\PrivateHospitals.Data.csproj" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+      <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-      <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+      <ProjectReference Include="..\PrivateHospitals.Core\PrivateHospitals.Core.csproj" />
+      <ProjectReference Include="..\PrivateHospitals.Infrastructure\PrivateHospitals.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
