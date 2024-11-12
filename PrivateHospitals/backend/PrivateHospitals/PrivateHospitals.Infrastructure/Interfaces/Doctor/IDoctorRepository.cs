@@ -1,6 +1,6 @@
-namespace PrivateHospitals.Data.Interfaces.Doctor;
+namespace PrivateHospitals.Infrastructure.Interfaces.Doctor;
 
 public interface IDoctorRepository
 {
-    Task<bool> AddDoctorAsync(Core.Models.Doctor doctor);
+    Task<bool> AddDoctorAsync(Core.Models.Users.Doctor doctor);
 }

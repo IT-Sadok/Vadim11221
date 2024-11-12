@@ -1,6 +1,6 @@
 using PrivateHospitals.Core.Enum;
 
-namespace PrivateHospitals.Core.Models;
+namespace PrivateHospitals.Core.Models.Users;
 
 public class Doctor: AppUser
 {

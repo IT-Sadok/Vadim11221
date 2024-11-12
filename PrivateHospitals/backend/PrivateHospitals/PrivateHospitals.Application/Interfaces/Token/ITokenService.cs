@@ -1,6 +1,6 @@
-using PrivateHospitals.Core.Models;
+using PrivateHospitals.Core.Models.Users;
 
-namespace PrivateHospitals.Application.Interfaces;
+namespace PrivateHospitals.Application.Interfaces.Token;
 
 public interface ITokenService
 {

@@ -1,7 +1,6 @@
-namespace PrivateHospitals.Data.Interfaces.Patient;
-using PrivateHospitals.Core.Models;
+namespace PrivateHospitals.Infrastructure.Interfaces.Patient;
 
 public interface IPatientRepository
 {
-    Task<bool> AddPatientAsync(Patient patient);
+    Task<bool> AddPatientAsync(Core.Models.Users.Patient patient);
 }

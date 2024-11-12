@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
-using PrivateHospitals.Core.Models;
+using PrivateHospitals.Core.Models.Users;
 
-namespace PrivateHospitals.Data.Interfaces.User;
+namespace PrivateHospitals.Infrastructure.Interfaces.User;
 
 public interface IUserRepository
 {

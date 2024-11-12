@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PrivateHospitals.Core.Models;
-using PrivateHospitals.Data.Data;
-using PrivateHospitals.Data.Interfaces.User;
+using PrivateHospitals.Core.Models.Users;
+using PrivateHospitals.Infrastructure.Data;
+using PrivateHospitals.Infrastructure.Interfaces.User;
 
-namespace PrivateHospitals.Data.Repositories.User;
+namespace PrivateHospitals.Infrastructure.Repositories.User;
 
 public class UserRepository(
     UserManager<AppUser> _userManager,

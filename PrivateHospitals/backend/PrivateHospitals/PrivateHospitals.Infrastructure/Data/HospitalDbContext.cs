@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using PrivateHospitals.Core.Models;
+using PrivateHospitals.Core.Models.Users;
 
-namespace PrivateHospitals.Data.Data;
+namespace PrivateHospitals.Infrastructure.Data;
 
 public class HospitalDbContext: IdentityDbContext<AppUser>
 {

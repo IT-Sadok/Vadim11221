@@ -1,7 +1,7 @@
 using FluentValidation;
 using PrivateHospitals.Application.Dtos.User;
 
-namespace PrivateHospitals.Application.Validations.User;
+namespace PrivateHospitals.Application.Validators.User;
 
 public class LoginDtoValidator: AbstractValidator<LoginDto>
 {

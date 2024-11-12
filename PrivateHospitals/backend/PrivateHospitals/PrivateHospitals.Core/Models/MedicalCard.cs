@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using PrivateHospitals.Core.Models.Users;
 
 namespace PrivateHospitals.Core.Models;
 

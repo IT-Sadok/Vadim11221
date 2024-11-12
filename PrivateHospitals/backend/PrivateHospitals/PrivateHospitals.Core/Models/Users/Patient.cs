@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PrivateHospitals.Core.Models;
+namespace PrivateHospitals.Core.Models.Users;
 
 public class Patient: AppUser
 {

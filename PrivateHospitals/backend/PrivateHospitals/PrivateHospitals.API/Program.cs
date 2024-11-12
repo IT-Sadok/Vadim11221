@@ -6,16 +6,20 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using PrivateHospitals.API.Middleware;
 using PrivateHospitals.Application.Interfaces;
+using PrivateHospitals.Application.Interfaces.Token;
 using PrivateHospitals.Application.Interfaces.User;
 using PrivateHospitals.Application.Profiles;
 using PrivateHospitals.Application.Services;
+using PrivateHospitals.Application.Services.Token;
 using PrivateHospitals.Application.Services.User;
-using PrivateHospitals.Application.Validations.User;
+using PrivateHospitals.Application.Validators.User;
 using PrivateHospitals.Core.Models;
-using PrivateHospitals.Data.Data;
-using PrivateHospitals.Data.Interfaces.User;
-using PrivateHospitals.Data.Repositories.User;
+using PrivateHospitals.Core.Models.Users;
+using PrivateHospitals.Infrastructure.Data;
+using PrivateHospitals.Infrastructure.Interfaces.User;
+using PrivateHospitals.Infrastructure.Repositories.User;
 
 
 var builder = WebApplication.CreateBuilder(args);

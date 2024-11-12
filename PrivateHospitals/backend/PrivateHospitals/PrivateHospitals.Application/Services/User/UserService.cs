@@ -2,10 +2,12 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using PrivateHospitals.Application.Dtos.User;
 using PrivateHospitals.Application.Interfaces;
+using PrivateHospitals.Application.Interfaces.Token;
 using PrivateHospitals.Application.Interfaces.User;
 using PrivateHospitals.Application.Responses;
 using PrivateHospitals.Core.Models;
-using PrivateHospitals.Data.Interfaces.User;
+using PrivateHospitals.Core.Models.Users;
+using PrivateHospitals.Infrastructure.Interfaces.User;
 
 namespace PrivateHospitals.Application.Services.User;
 

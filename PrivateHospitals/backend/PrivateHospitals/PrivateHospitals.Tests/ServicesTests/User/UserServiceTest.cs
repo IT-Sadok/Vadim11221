@@ -1,14 +1,17 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Moq;
-using AutoMapper;
 using PrivateHospitals.Application.Dtos.User;
-using PrivateHospitals.Application.Interfaces;
+using PrivateHospitals.Application.Interfaces.Token;
 using PrivateHospitals.Application.Services.User;
 using PrivateHospitals.Core.Models;
-using PrivateHospitals.Data.Interfaces.User;
+using PrivateHospitals.Core.Models.Users;
+using PrivateHospitals.Infrastructure.Interfaces.User;
 using Xunit;
 using Assert = Xunit.Assert;
+
+namespace PrivateHospitals.Tests.ServicesTests.User;
 
 public class UserServiceTests
 {

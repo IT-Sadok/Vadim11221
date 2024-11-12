@@ -1,13 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using PrivateHospitals.Application.Interfaces;
+using PrivateHospitals.Application.Interfaces.Token;
 using PrivateHospitals.Core.Models;
+using PrivateHospitals.Core.Models.Users;
 
-namespace PrivateHospitals.Application.Services;
+namespace PrivateHospitals.Application.Services.Token;
 
 public class TokenService: ITokenService
 {

@@ -2,6 +2,8 @@ using FluentValidation;
 using FluentValidation.Results;
 using Newtonsoft.Json;
 
+namespace PrivateHospitals.API.Middleware;
+
 public class ValidationMiddleware
 {
     private readonly RequestDelegate _next;
