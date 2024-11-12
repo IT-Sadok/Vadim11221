@@ -1,7 +1,7 @@
 namespace PrivateHospitals.Application.Dtos.User;
 
-public class UserLoggedDto
+public record UserLoggedDto
 {
-    public string Email { get; set; }
-    public string Token { get; set; }
+    public string Email { get; init; }
+    public string Token { get; init; }
 }

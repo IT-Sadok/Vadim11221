@@ -50,13 +50,13 @@ namespace PrivateHospitals.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f3d8511a-d202-49a1-8583-1133bd25bc67",
+                            Id = "57de60e8-a2e7-466a-a630-8d80d1b1bb68",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "07f9a66d-d6d0-401d-8697-e3dd134935a2",
+                            Id = "1ef6346b-9bdf-4c1e-8a9f-9d83126151c4",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });
@@ -217,6 +217,10 @@ namespace PrivateHospitals.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");

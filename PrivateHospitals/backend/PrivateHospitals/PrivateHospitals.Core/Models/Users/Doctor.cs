@@ -3,8 +3,8 @@ using PrivateHospitals.Core.Enum;
 namespace PrivateHospitals.Core.Models;
 
 public class Doctor: AppUser
-{ 
-    public SpecialitiesOfDoctor Speciality { get; set; }
+{
+    public DoctorSpecialities DoctorSpeciality { get; set; } = DoctorSpecialities.Doctor;
     
     public List<MedicalCard> MedicalCardsOfPatients { get; set; }
 }

@@ -1,9 +1,6 @@
 using FluentValidation;
 using FluentValidation.Results;
 using Newtonsoft.Json;
-using PrivateHospitals.Application.Dtos.Doctor;
-using PrivateHospitals.Application.Dtos.Patient;
-using PrivateHospitals.Application.Dtos.User;
 
 public class ValidationMiddleware
 {
@@ -22,20 +19,9 @@ public class ValidationMiddleware
             
             var body = await context.Request.ReadFromJsonAsync<object>();
 
-            if (body is RegisterDoctorDto doctorDto)
+            if (body != null)
             {
-                await ValidateAndRespondAsync(context, doctorDto);
-                return;
-            }
-            else if (body is RegisterPatientDto patientDto)
-            {
-                await ValidateAndRespondAsync(context, patientDto);
-                return;
-            }
-            else if (body is LoginDto loginDto)
-            {
-                await ValidateAndRespondAsync(context, loginDto);
-                return;
+                await ValidateAndRespondAsync(context, body);
             }
 
             context.Request.Body.Position = 0;

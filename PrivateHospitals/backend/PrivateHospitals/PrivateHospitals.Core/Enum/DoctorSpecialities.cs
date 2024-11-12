@@ -1,7 +1,8 @@
 namespace PrivateHospitals.Core.Enum;
 
-public enum SpecialitiesOfDoctor
+public enum DoctorSpecialities
 {
+    Doctor,
     Cardiologist,      
     Dermatologist,    
     Neurologist,        

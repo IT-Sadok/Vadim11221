@@ -6,17 +6,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using PrivateHospitals.Application.Dtos.Doctor;
-using PrivateHospitals.Application.Dtos.Patient;
-using PrivateHospitals.Application.Dtos.User;
 using PrivateHospitals.Application.Interfaces;
 using PrivateHospitals.Application.Interfaces.User;
 using PrivateHospitals.Application.Profiles;
 using PrivateHospitals.Application.Services;
 using PrivateHospitals.Application.Services.User;
 using PrivateHospitals.Application.Validations.User;
-using PrivateHospitals.Application.Validators.Doctor;
-using PrivateHospitals.Application.Validators.Patient;
 using PrivateHospitals.Core.Models;
 using PrivateHospitals.Data.Data;
 using PrivateHospitals.Data.Interfaces.User;
@@ -27,7 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<RegisterDoctorDtoValidator>());;
+builder.Services.AddControllers().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<RegisterDtoValidator>());;
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

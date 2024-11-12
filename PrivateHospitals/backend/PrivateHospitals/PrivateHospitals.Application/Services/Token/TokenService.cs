@@ -23,11 +23,6 @@ public class TokenService: ITokenService
         _jwtSettings = jwtSettings.Value;
         
         _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SigningKey)); 
-        Console.WriteLine($"Issuer: {_jwtSettings.Issuer}");
-        Console.WriteLine($"Audience: {_jwtSettings.Audience}");
-        Console.WriteLine($"TokenExpirationDays: {_jwtSettings.TokenExpirationDays}");
-        Console.WriteLine($"SigningKey: {_jwtSettings.SigningKey}");
-        
     }
 
     public string CreateToken(AppUser user)

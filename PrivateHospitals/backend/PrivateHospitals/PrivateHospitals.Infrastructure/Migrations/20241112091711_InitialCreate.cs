@@ -35,6 +35,7 @@ namespace PrivateHospitals.Data.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
+                    Role = table.Column<string>(type: "text", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -166,8 +167,8 @@ namespace PrivateHospitals.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "07f9a66d-d6d0-401d-8697-e3dd134935a2", null, "Patient", "PATIENT" },
-                    { "f3d8511a-d202-49a1-8583-1133bd25bc67", null, "Doctor", "DOCTOR" }
+                    { "1ef6346b-9bdf-4c1e-8a9f-9d83126151c4", null, "Patient", "PATIENT" },
+                    { "57de60e8-a2e7-466a-a630-8d80d1b1bb68", null, "Doctor", "DOCTOR" }
                 });
 
             migrationBuilder.CreateIndex(

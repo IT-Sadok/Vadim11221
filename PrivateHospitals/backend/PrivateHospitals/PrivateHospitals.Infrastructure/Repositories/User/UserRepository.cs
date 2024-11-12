@@ -7,12 +7,10 @@ using PrivateHospitals.Data.Interfaces.User;
 namespace PrivateHospitals.Data.Repositories.User;
 
 public class UserRepository(
-    UserManager<AppUser> userManager,
-    HospitalDbContext hospitalDbContext
+    UserManager<AppUser> _userManager,
+    HospitalDbContext _hospitalDbContext
 ): IUserRepository
 {
-    private readonly UserManager<AppUser> _userManager = userManager;
-    private readonly HospitalDbContext _hospitalDbContext = hospitalDbContext;
 
     public async Task<AppUser?> GetUserByEmailAsync(string email)
     {

@@ -1,45 +1,38 @@
-using AutoMapper;
-using FluentAssertions;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moq;
-using Xunit;
-using PrivateHospitals.Application.Dtos.Doctor;
-using PrivateHospitals.Application.Dtos.Patient;
+using AutoMapper;
+using PrivateHospitals.Application.Dtos.User;
 using PrivateHospitals.Application.Interfaces;
+using PrivateHospitals.Application.Services.User;
 using PrivateHospitals.Core.Models;
 using PrivateHospitals.Data.Interfaces.User;
-using PrivateHospitals.Application.Services.User;
-using PrivateHospitals.Core.Enum;
+using Xunit;
+using Assert = Xunit.Assert;
 
-public class UserServiceTest
+public class UserServiceTests
 {
-    private readonly Mock<IUserRepository> _userRepositoryMock = new();
+    private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly Mock<SignInManager<AppUser>> _signInManagerMock;
-    private readonly Mock<UserManager<AppUser>> _userManagerMock;
-    private readonly Mock<ITokenService> _tokenServiceMock = new();
-    private readonly Mock<IMapper> _mapperMock = new();
+    private readonly Mock<ITokenService> _tokenServiceMock;
+    private readonly Mock<IMapper> _mapperMock;
     private readonly UserService _userService;
 
-    public UserServiceTest()
+    public UserServiceTests()
     {
-        var userStoreMock = new Mock<IUserStore<AppUser>>();
-        _userManagerMock = new Mock<UserManager<AppUser>>(
-            userStoreMock.Object, null, null, null, null, null, null, null, null
-        );
+        _userRepositoryMock = new Mock<IUserRepository>();
+        _tokenServiceMock = new Mock<ITokenService>();
+        _mapperMock = new Mock<IMapper>();
+
+        var userManagerMock = new Mock<UserManager<AppUser>>(
+            Mock.Of<IUserStore<AppUser>>(),
+            null, null, null, null, null, null, null, null);
 
         _signInManagerMock = new Mock<SignInManager<AppUser>>(
-            _userManagerMock.Object,
-            new Mock<IHttpContextAccessor>().Object,
-            new Mock<IUserClaimsPrincipalFactory<AppUser>>().Object,
-            new Mock<IOptions<IdentityOptions>>().Object,
-            new Mock<ILogger<SignInManager<AppUser>>>().Object,
-            new Mock<IAuthenticationSchemeProvider>().Object,
-            new Mock<IUserConfirmation<AppUser>>().Object
-        );
+            userManagerMock.Object,
+            Mock.Of<IHttpContextAccessor>(),
+            Mock.Of<IUserClaimsPrincipalFactory<AppUser>>(),
+            null, null, null, null);
 
         _userService = new UserService(
             _userRepositoryMock.Object,
@@ -47,139 +40,122 @@ public class UserServiceTest
             _tokenServiceMock.Object,
             _mapperMock.Object);
     }
-    
+
     [Fact]
-    public async Task RegisterDoctorAsync_ShouldReturnSuccess_WhenDoctorIsCreated()
+    public async Task RegisterUser_ShouldReturnSuccess_WhenDoctorCreatedSuccessfully()
     {
-        var registerDoctorDto = new RegisterDoctorDto
+        var registerDto = new RegisterDto()
         {
-            FirstName = "John",
-            LastName = "Doe",
-            UserName = "johndoe",
-            Email = "john@example.com",
-            Speciality = SpecialitiesOfDoctor.Cardiologist,
-            Password = "password123"
+            FirstName = "Joe",
+            LastName = "Doctor",
+            UserName = "JoeDoctor",
+            Email = "joe.doctor@gmail.com",
+            Role = Roles.Doctor,
+            Password = "Doctor112281_"
         };
-        
+
         var doctor = new Doctor();
-        _mapperMock.Setup(m => m.Map<Doctor>(registerDoctorDto)).Returns(doctor);
-        _userRepositoryMock.Setup(r => r.CreateUserAsync(doctor, registerDoctorDto.Password))
-                           .ReturnsAsync(IdentityResult.Success);
-        _userRepositoryMock.Setup(r => r.AddUserToRoleAsync(doctor, Roles.Doctor))
-                           .ReturnsAsync(IdentityResult.Success);
+        _mapperMock.Setup(x => x.Map<Doctor>(registerDto)).Returns(doctor);
+        _userRepositoryMock.Setup(x => x.CreateUserAsync(doctor, registerDto.Password))
+            .ReturnsAsync(IdentityResult.Success);
 
-        var result = await _userService.RegisterDoctorAsync(registerDoctorDto);
+        var result = await _userService.RegisterUser(registerDto);
 
-        result.Success.Should().BeTrue();
-        result.Data.Should().BeTrue();
+        Assert.True(result.Success);
+        _userRepositoryMock.Verify(x => x.CreateUserAsync(doctor, registerDto.Password), Times.Once);
+        _userRepositoryMock.Verify(x => x.AddUserToRoleAsync(doctor, Roles.Doctor), Times.Once);
     }
     
     [Fact]
-    public async Task RegisterDoctorAsync_ShouldReturnError_WhenDoctorIsNullAfterMapping()
+    public async Task RegisterUser_ShouldReturnSuccess_WhenPatientCreatedSuccessfully()
     {
-        var registerDoctorDto = new RegisterDoctorDto
+        var registerDto = new RegisterDto()
         {
-            FirstName = "John",
-            LastName = "Doe",
-            UserName = "johndoe",
-            Email = "john@example.com",
-            Speciality = SpecialitiesOfDoctor.Cardiologist,
-            Password = "password123"
+            FirstName = "Joe",
+            LastName = "Patient",
+            UserName = "JoePatient",
+            Email = "joe.patient@gmail.com",
+            Role = Roles.Patient,
+            Password = "Patient112281_"
         };
-        
-        _mapperMock.Setup(m => m.Map<Doctor>(registerDoctorDto)).Returns((Doctor)null);
 
-        var result = await _userService.RegisterDoctorAsync(registerDoctorDto);
-
-        result.Success.Should().BeFalse();
-        result.Errors.Should().Contain("Doctor is null");
-    }
-    
-    [Fact]
-    public async Task RegisterPatientAsync_ShouldReturnSuccess_WhenPatientIsCreated()
-    {
-        var registerPatientDto = new RegisterPatientDto
-        {
-            FirstName = "Jane",
-            LastName = "Doe",
-            UserName = "janedoe",
-            Email = "jane@example.com",
-            Password = "password123"
-        };
-        
         var patient = new Patient();
-        _mapperMock.Setup(m => m.Map<Patient>(registerPatientDto)).Returns(patient);
-        _userRepositoryMock.Setup(r => r.CreateUserAsync(patient, registerPatientDto.Password))
-                           .ReturnsAsync(IdentityResult.Success);
-        _userRepositoryMock.Setup(r => r.AddUserToRoleAsync(patient, Roles.Patient))
-                           .ReturnsAsync(IdentityResult.Success);
+        _mapperMock.Setup(x => x.Map<Patient>(registerDto)).Returns(patient);
+        _userRepositoryMock.Setup(x => x.CreateUserAsync(patient, registerDto.Password))
+            .ReturnsAsync(IdentityResult.Success);
+        _userRepositoryMock.Setup(x => x.AddUserToRoleAsync(patient, Roles.Patient)).Returns(Task.FromResult(IdentityResult.Success));
 
-        var result = await _userService.RegisterPatientAsync(registerPatientDto);
+        var result = await _userService.RegisterUser(registerDto);
 
-        result.Success.Should().BeTrue();
-        result.Data.Should().BeTrue();
+        Assert.True(result.Success);
+        _userRepositoryMock.Verify(x => x.CreateUserAsync(patient, registerDto.Password), Times.Once);
+        _userRepositoryMock.Verify(x => x.AddUserToRoleAsync(patient, Roles.Patient), Times.Once);
     }
-    
+
     [Fact]
-    public async Task RegisterPatientAsync_ShouldReturnError_WhenPatientIsNullAfterMapping()
+    public async Task RegisterUser_ShouldReturnError_WhenDoctorCreationFails()
     {
-        var registerPatientDto = new RegisterPatientDto
+        var registerDto = new RegisterDto()
         {
-            FirstName = "Jane",
-            LastName = "Doe",
-            UserName = "janedoe",
-            Email = "jane@example.com",
-            Password = "password123"
+            FirstName = "Joe",
+            LastName = "Doctor",
+            UserName = "JoeDoctor",
+            Email = "joe.doctor@gmail.com",
+            Role = Roles.Doctor,
+            Password = "Doctor112281_"
         };
+
+        var doctor = new Doctor();
+        _mapperMock.Setup(x => x.Map<Doctor>(registerDto)).Returns(doctor);
+        _userRepositoryMock.Setup(x => x.CreateUserAsync(doctor, registerDto.Password))
+            .ReturnsAsync(IdentityResult.Failed());
         
-        _mapperMock.Setup(m => m.Map<Patient>(registerPatientDto)).Returns((Patient)null);
-
-        var result = await _userService.RegisterPatientAsync(registerPatientDto);
-
-        result.Success.Should().BeFalse();
-        result.Errors.Should().Contain("Patient is null");
+        var result = await _userService.RegisterUser(registerDto);
+        
+        Assert.False(result.Success);
+        Assert.Contains("Something went wrong during creating the doctor.", result.Errors);
     }
     
     [Fact]
-    public async Task TestUserLoginAsync_ShouldReturnTrue_WhenLoginIsSuccessful()
+    public async Task LoginUserAsync_ShouldReturnSuccess_WhenLoginIsSuccessful()
     {
-        var user = new AppUser { UserName = "testuser", Email = "testuser@example.com" };
-        var password = "Password123!";
-
-        _userManagerMock.Setup(x => x.FindByNameAsync(user.UserName)).ReturnsAsync(user);
-        _signInManagerMock.Setup(x => x.PasswordSignInAsync(user.UserName, password, false, false))
-                          .ReturnsAsync(SignInResult.Success);
-
-        var result = await _signInManagerMock.Object.PasswordSignInAsync(user.UserName, password, false, false);
-
-        result.Succeeded.Should().BeTrue();
+        var loginDto = new LoginDto { Email = "test@example.com", Password = "password123_" };
+        var user = new AppUser { Email = loginDto.Email };
+        _userRepositoryMock.Setup(x => x.GetUserByEmailAsync(loginDto.Email)).ReturnsAsync(user);
+        _signInManagerMock.Setup(x => x.CheckPasswordSignInAsync(user, loginDto.Password, false))
+            .ReturnsAsync(SignInResult.Success);
+        _tokenServiceMock.Setup(x => x.CreateToken(user)).Returns("test-token");
+        
+        var result = await _userService.LoginUserAsync(loginDto);
+        
+        Assert.True(result.Success);
+        Assert.Equal(loginDto.Email, result.Data.Email);
+        Assert.Equal("test-token", result.Data.Token);
     }
     
     [Fact]
-    public async Task TestUserLoginAsync_ShouldReturnFalse_WhenLoginFails()
+    public async Task LoginUserAsync_ShouldReturnError_WhenUserNotFound()
     {
-        var user = new AppUser { UserName = "testuser", Email = "testuser@example.com" };
-        var password = "IncorrectPassword";
-
-        _userManagerMock.Setup(x => x.FindByNameAsync(user.UserName)).ReturnsAsync(user);
-        _signInManagerMock.Setup(x => x.PasswordSignInAsync(user.UserName, password, false, false))
-                          .ReturnsAsync(SignInResult.Failed);
-
-        var result = await _signInManagerMock.Object.PasswordSignInAsync(user.UserName, password, false, false);
-
-        result.Succeeded.Should().BeFalse();
+        var loginDto = new LoginDto { Email = "test@example.com", Password = "password123_" };
+        _userRepositoryMock.Setup(x => x.GetUserByEmailAsync(loginDto.Email)).ReturnsAsync((AppUser)null);
+        
+        var result = await _userService.LoginUserAsync(loginDto);
+        
+        Assert.False(result.Success);
+        Assert.Contains("User not found", result.Errors);
     }
-    
     [Fact]
-    public async Task TestUserLoginAsync_ShouldReturnFalse_WhenUserNotFound()
-    {   
-        var userName = "nonexistentuser";
-        var password = "AnyPassword";
+    public async Task LoginUserAsync_ShouldReturnError_WhenPasswordIsInvalid()
+    {
+        var loginDto = new LoginDto { Email = "test@example.com", Password = "password123_" };
+        var user = new AppUser { Email = loginDto.Email };
+        _userRepositoryMock.Setup(x => x.GetUserByEmailAsync(loginDto.Email)).ReturnsAsync(user);
+        _signInManagerMock.Setup(sm => sm.CheckPasswordSignInAsync(user, loginDto.Password, false))
+            .ReturnsAsync(SignInResult.Failed);
 
-        _userManagerMock.Setup(x => x.FindByNameAsync(userName)).ReturnsAsync((AppUser)null);
+        var result = await _userService.LoginUserAsync(loginDto);
         
-        var user = await _userManagerMock.Object.FindByNameAsync(userName);
-        
-        user.Should().BeNull();
+        Assert.False(result.Success);
+        Assert.Contains("Invalid login or password", result.Errors);
     }
 }

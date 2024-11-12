@@ -29,8 +29,8 @@ public class HospitalDbContext: IdentityDbContext<AppUser>
             },
             new IdentityRole
             {
-            Name= "Patient",
-            NormalizedName= "PATIENT",
+                Name= "Patient",
+                NormalizedName= "PATIENT",
             } 
         };
         builder.Entity<IdentityRole>().HasData(roles);
