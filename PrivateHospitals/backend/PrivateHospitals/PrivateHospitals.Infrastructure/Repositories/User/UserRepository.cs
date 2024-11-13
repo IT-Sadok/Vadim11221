@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Routing.Template;
 using Microsoft.EntityFrameworkCore;
 using PrivateHospitals.Core.Models.Users;
 using PrivateHospitals.Infrastructure.Data;

@@ -1,6 +1,9 @@
+using PrivateHospitals.Core.Enum;
+using PrivateHospitals.Core.Models.Users;
+
 namespace PrivateHospitals.Infrastructure.Interfaces.Doctor;
 
 public interface IDoctorRepository
 {
-    Task<bool> AddDoctorAsync(Core.Models.Users.Doctor doctor);
+    Task<AppUser> GetDoctorByFullName(string firstName, string lastName );
 }

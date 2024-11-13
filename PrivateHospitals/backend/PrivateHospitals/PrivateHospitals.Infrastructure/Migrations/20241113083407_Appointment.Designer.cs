@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PrivateHospitals.Infrastructure.Data;
@@ -11,9 +12,11 @@ using PrivateHospitals.Infrastructure.Data;
 namespace PrivateHospitals.Data.Migrations
 {
     [DbContext(typeof(HospitalDbContext))]
-    partial class HospitalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241113083407_Appointment")]
+    partial class Appointment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,13 +53,13 @@ namespace PrivateHospitals.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d3ec4232-5ea5-40f7-a539-fa00fe9f6d1b",
+                            Id = "1337f479-0e2b-400f-8ea6-bacdfdbe11f1",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "46025930-082c-49a1-9728-d3afa5840528",
+                            Id = "b43cd00f-08a2-4b6d-8c72-bb459d732c3e",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });
@@ -170,13 +173,13 @@ namespace PrivateHospitals.Data.Migrations
 
             modelBuilder.Entity("PrivateHospitals.Core.Models.Appointment", b =>
                 {
-                    b.Property<int>("AppointmentId")
+                    b.Property<int>("AppointmantId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AppointmentId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AppointmantId"));
 
-                    b.Property<DateTime>("AppointmentDate")
+                    b.Property<DateTime>("AppointmantDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("DoctorId")
@@ -190,7 +193,7 @@ namespace PrivateHospitals.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.HasKey("AppointmentId");
+                    b.HasKey("AppointmantId");
 
                     b.HasIndex("DoctorId");
 
@@ -239,6 +242,11 @@ namespace PrivateHospitals.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -279,8 +287,7 @@ namespace PrivateHospitals.Data.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("character varying(8)");
+                        .HasColumnType("text");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -303,7 +310,7 @@ namespace PrivateHospitals.Data.Migrations
 
                     b.ToTable("AspNetUsers", (string)null);
 
-                    b.HasDiscriminator<string>("Role").HasValue("AppUser");
+                    b.HasDiscriminator().HasValue("AppUser");
 
                     b.UseTphMappingStrategy();
                 });

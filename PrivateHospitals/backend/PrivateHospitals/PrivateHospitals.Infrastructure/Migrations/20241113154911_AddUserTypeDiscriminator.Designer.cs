@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PrivateHospitals.Infrastructure.Data;
@@ -11,9 +12,11 @@ using PrivateHospitals.Infrastructure.Data;
 namespace PrivateHospitals.Data.Migrations
 {
     [DbContext(typeof(HospitalDbContext))]
-    partial class HospitalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241113154911_AddUserTypeDiscriminator")]
+    partial class AddUserTypeDiscriminator
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,13 +53,13 @@ namespace PrivateHospitals.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d3ec4232-5ea5-40f7-a539-fa00fe9f6d1b",
+                            Id = "dc859cc1-5a71-44ab-8eb3-6368b346f945",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "46025930-082c-49a1-9728-d3afa5840528",
+                            Id = "9db962ad-019f-4b66-a6e2-74ec346f6dc5",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });
@@ -279,8 +282,7 @@ namespace PrivateHospitals.Data.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("character varying(8)");
+                        .HasColumnType("text");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -291,6 +293,11 @@ namespace PrivateHospitals.Data.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
+
+                    b.Property<string>("UserType")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)");
 
                     b.HasKey("Id");
 
@@ -303,7 +310,7 @@ namespace PrivateHospitals.Data.Migrations
 
                     b.ToTable("AspNetUsers", (string)null);
 
-                    b.HasDiscriminator<string>("Role").HasValue("AppUser");
+                    b.HasDiscriminator<string>("UserType").HasValue("AppUser");
 
                     b.UseTphMappingStrategy();
                 });

@@ -1,24 +1,26 @@
-using System.Configuration;
-using FluentAssertions;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PrivateHospitals.API.Middleware;
-using PrivateHospitals.Application.Interfaces;
+using PrivateHospitals.Application.Interfaces.Appointment;
 using PrivateHospitals.Application.Interfaces.Token;
 using PrivateHospitals.Application.Interfaces.User;
 using PrivateHospitals.Application.Profiles;
-using PrivateHospitals.Application.Services;
+using PrivateHospitals.Application.Services.Appointment;
 using PrivateHospitals.Application.Services.Token;
 using PrivateHospitals.Application.Services.User;
 using PrivateHospitals.Application.Validators.User;
 using PrivateHospitals.Core.Models;
 using PrivateHospitals.Core.Models.Users;
 using PrivateHospitals.Infrastructure.Data;
+using PrivateHospitals.Infrastructure.Interfaces.Appointment;
+using PrivateHospitals.Infrastructure.Interfaces.Doctor;
+using PrivateHospitals.Infrastructure.Interfaces.Patient;
 using PrivateHospitals.Infrastructure.Interfaces.User;
+using PrivateHospitals.Infrastructure.Repositories.Appointment;
+using PrivateHospitals.Infrastructure.Repositories.Doctor;
 using PrivateHospitals.Infrastructure.Repositories.User;
 
 
@@ -74,6 +76,11 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"))
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+
+
 
 builder.Services.AddAutoMapper(typeof(MapProfile).Assembly);
 
