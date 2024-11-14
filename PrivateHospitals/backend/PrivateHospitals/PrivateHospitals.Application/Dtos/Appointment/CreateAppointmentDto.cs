@@ -4,8 +4,8 @@ namespace PrivateHospitals.Application.Dtos.Appointment;
 
 public record CreateAppointmentDto
 {
-    public DateTime Date { get; init; }
-    public string PatientId { get; init; }
-    public string DoctorFirstName { get; init; }
-    public string DoctorLastName { get; init; }
+    public required DateTime Date { get; init; }
+    public required string PatientId { get; init; }
+    public required string DoctorFirstName { get; init; }
+    public required string DoctorLastName { get; init; }
 }

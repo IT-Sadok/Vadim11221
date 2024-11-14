@@ -6,13 +6,15 @@ using PrivateHospitals.Core.Enum;
 using PrivateHospitals.Core.Models.Users;
 using PrivateHospitals.Infrastructure.Interfaces.Appointment;
 using PrivateHospitals.Infrastructure.Interfaces.Doctor;
+using PrivateHospitals.Infrastructure.Interfaces.Patient;
 
 namespace PrivateHospitals.Application.Services.Appointment;
 
 public class AppointmentService(
     IAppointmentRepository _appointmentRepository,
     IDoctorRepository _doctorRepository,
-    IMapper _mapper
+    IMapper _mapper,
+    IPatientRepository _patientRepository
 ): IAppointmentService
 {
     public async Task<Result<bool>> CreateAppointment(CreateAppointmentDto appointmentDto)
@@ -39,5 +41,26 @@ public class AppointmentService(
         }
         
         return Result<bool>.SuccessResponse(true);
+    }
+
+    public async Task<Result<List<AppointmentDto>>> GetAppointmentsBySpecialityId(DoctorSpecialities speciality, string patientId)
+    {
+        var patient = await _patientRepository.GetPatientByIdAsync(patientId);
+
+        if (patient == null)
+        {
+            return Result<List<AppointmentDto>>.ErrorResponse(new List<string>() {"Patient not found"});
+        }
+        
+        var appointments = await _appointmentRepository.GetAppointmentsBySpeciality(speciality, patientId);
+
+        if (appointments.Count == 0)
+        {
+            return Result<List<AppointmentDto>>.ErrorResponse(new List<string>() {"Appointments not found"});
+        }
+        
+        var appointmentsDto = _mapper.Map<List<AppointmentDto>>(appointments);
+        
+        return Result<List<AppointmentDto>>.SuccessResponse(appointmentsDto);
     }
 }

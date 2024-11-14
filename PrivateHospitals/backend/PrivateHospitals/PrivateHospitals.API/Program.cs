@@ -21,6 +21,7 @@ using PrivateHospitals.Infrastructure.Interfaces.Patient;
 using PrivateHospitals.Infrastructure.Interfaces.User;
 using PrivateHospitals.Infrastructure.Repositories.Appointment;
 using PrivateHospitals.Infrastructure.Repositories.Doctor;
+using PrivateHospitals.Infrastructure.Repositories.Patient;
 using PrivateHospitals.Infrastructure.Repositories.User;
 
 
@@ -79,6 +80,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 
 

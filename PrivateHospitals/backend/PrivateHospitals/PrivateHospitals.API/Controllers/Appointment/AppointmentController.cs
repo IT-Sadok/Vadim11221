@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PrivateHospitals.Application.Dtos.Appointment;
 using PrivateHospitals.Application.Interfaces.Appointment;
+using PrivateHospitals.Core.Enum;
 
 namespace PrivateHospitals.API.Controllers.Appointment;
 
@@ -20,6 +21,19 @@ public class AppointmentController(
             return BadRequest(result.Errors);
         }
         
+        return Ok(result);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAppointmentsBySpeciality([FromQuery] DoctorSpecialities speciality, [FromQuery] string patientId)
+    {
+        var result = await _appointmentService.GetAppointmentsBySpecialityId(speciality, patientId);
+
+        if (!result.Success)
+        {
+            return BadRequest(result.Errors);
+        }
+
         return Ok(result);
     }
 }
