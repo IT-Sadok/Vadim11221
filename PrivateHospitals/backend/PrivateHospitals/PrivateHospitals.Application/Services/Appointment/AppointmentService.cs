@@ -1,5 +1,7 @@
 using AutoMapper;
 using PrivateHospitals.Application.Dtos.Appointment;
+using PrivateHospitals.Application.Dtos.Doctor;
+using PrivateHospitals.Application.Dtos.Patient;
 using PrivateHospitals.Application.Interfaces.Appointment;
 using PrivateHospitals.Application.Responses;
 using PrivateHospitals.Core.Enum;
@@ -21,17 +23,18 @@ public class AppointmentService(
     {
         var doctorDto = await _doctorRepository
             .GetDoctorByFullName(appointmentDto.DoctorFirstName, appointmentDto.DoctorLastName);
+        
 
         if (doctorDto == null)
         {
             return Result<bool>.ErrorResponse(new List<string>() {"Doctor not found"});
         }
         
-        var doctor = _mapper.Map<Doctor>(doctorDto);
 
         var appointmnet = _mapper.Map<Core.Models.Appointment>(appointmentDto);
+        
         appointmnet.AppointmentDate = appointmentDto.Date;
-        appointmnet.DoctorId = doctor.Id;
+        appointmnet.DoctorId = doctorDto.Id;
         
         var result = await _appointmentRepository.CreateAppointmentAsync(appointmnet);
 
@@ -46,6 +49,7 @@ public class AppointmentService(
     public async Task<Result<List<AppointmentDto>>> GetAppointmentsBySpecialityId(DoctorSpecialities speciality, string patientId)
     {
         var patient = await _patientRepository.GetPatientByIdAsync(patientId);
+        
 
         if (patient == null)
         {
@@ -53,6 +57,7 @@ public class AppointmentService(
         }
         
         var appointments = await _appointmentRepository.GetAppointmentsBySpeciality(speciality, patientId);
+        
 
         if (appointments.Count == 0)
         {
