@@ -23,14 +23,12 @@ public class AppointmentService(
     {
         var doctorDto = await _doctorRepository
             .GetDoctorByFullName(appointmentDto.DoctorFirstName, appointmentDto.DoctorLastName);
-        
 
         if (doctorDto == null)
         {
             return Result<bool>.ErrorResponse(new List<string>() {"Doctor not found"});
         }
         
-
         var appointmnet = _mapper.Map<Core.Models.Appointment>(appointmentDto);
         
         appointmnet.AppointmentDate = appointmentDto.Date;
@@ -49,7 +47,6 @@ public class AppointmentService(
     public async Task<Result<List<AppointmentDto>>> GetAppointmentsBySpecialityId(DoctorSpecialities speciality, string patientId)
     {
         var patient = await _patientRepository.GetPatientByIdAsync(patientId);
-        
 
         if (patient == null)
         {
@@ -63,6 +60,27 @@ public class AppointmentService(
         {
             return Result<List<AppointmentDto>>.ErrorResponse(new List<string>() {"Appointments not found"});
         }
+        
+        var appointmentsDto = _mapper.Map<List<AppointmentDto>>(appointments);
+        
+        return Result<List<AppointmentDto>>.SuccessResponse(appointmentsDto);
+    }
+
+    public async Task<Result<List<AppointmentDto>>> GetAppointmentByDate(DateTime fromDate, DateTime toDate, string patientId)
+    {
+        var patient = await _patientRepository.GetPatientByIdAsync(patientId);
+
+        if (patient == null)
+        {
+            return Result<List<AppointmentDto>>.ErrorResponse(new List<string>() {"Patient not found"});
+        }
+
+        if (fromDate >= toDate)
+        {
+            return Result<List<AppointmentDto>>.ErrorResponse(new List<string>() {"From date cannot be before to date "});
+        }
+        
+        var appointments =  await _appointmentRepository.GetAppointmentsByDate(fromDate, toDate, patientId);
         
         var appointmentsDto = _mapper.Map<List<AppointmentDto>>(appointments);
         

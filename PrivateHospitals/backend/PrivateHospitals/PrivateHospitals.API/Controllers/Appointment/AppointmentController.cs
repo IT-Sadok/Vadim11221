@@ -33,6 +33,19 @@ public class AppointmentController(
         {
             return BadRequest(result.Errors);
         }
+    
+        return Ok(result);
+    }
+
+    [HttpGet("date")]
+    public async Task<IActionResult> GetAppointmentByDate([FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo, [FromQuery] string patientId)
+    {
+        var result = await _appointmentService.GetAppointmentByDate(dateFrom, dateTo, patientId);
+        
+        if (!result.Success)
+        {
+            return BadRequest(result.Errors);
+        }
 
         return Ok(result);
     }
