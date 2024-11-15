@@ -9,7 +9,8 @@ public class Appointment
 {
     [Key]
     public int AppointmentId { get; set; }
-    public DateTime AppointmentDate { get; set; }
+    public DateOnly Date { get; set; }
+    public TimeSpan Time { get; set; }
     public AppointmentStatuses Status { get; set; } = AppointmentStatuses.Scheduled;
 
     [ForeignKey("Doctor")]

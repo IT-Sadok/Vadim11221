@@ -24,7 +24,7 @@ public class AppointmentController(
         return Ok(result);
     }
 
-    [HttpGet]
+    [HttpGet("speciality")]
     public async Task<IActionResult> GetAppointmentsBySpeciality([FromQuery] DoctorSpecialities speciality, [FromQuery] string patientId)
     {
         var result = await _appointmentService.GetAppointmentsBySpecialityId(speciality, patientId);
@@ -38,7 +38,7 @@ public class AppointmentController(
     }
 
     [HttpGet("date")]
-    public async Task<IActionResult> GetAppointmentByDate([FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo, [FromQuery] string patientId)
+    public async Task<IActionResult> GetAppointmentByDate([FromQuery] DateOnly dateFrom, [FromQuery] DateOnly dateTo, [FromQuery] string patientId)
     {
         var result = await _appointmentService.GetAppointmentByDate(dateFrom, dateTo, patientId);
         

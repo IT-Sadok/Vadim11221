@@ -7,10 +7,12 @@ using PrivateHospitals.API.Middleware;
 using PrivateHospitals.Application.Interfaces.Appointment;
 using PrivateHospitals.Application.Interfaces.Token;
 using PrivateHospitals.Application.Interfaces.User;
+using PrivateHospitals.Application.Interfaces.WorkingHours;
 using PrivateHospitals.Application.Profiles;
 using PrivateHospitals.Application.Services.Appointment;
 using PrivateHospitals.Application.Services.Token;
 using PrivateHospitals.Application.Services.User;
+using PrivateHospitals.Application.Services.WorkingHours;
 using PrivateHospitals.Application.Validators.User;
 using PrivateHospitals.Core.Models;
 using PrivateHospitals.Core.Models.Users;
@@ -19,10 +21,12 @@ using PrivateHospitals.Infrastructure.Interfaces.Appointment;
 using PrivateHospitals.Infrastructure.Interfaces.Doctor;
 using PrivateHospitals.Infrastructure.Interfaces.Patient;
 using PrivateHospitals.Infrastructure.Interfaces.User;
+using PrivateHospitals.Infrastructure.Interfaces.WorkingHours;
 using PrivateHospitals.Infrastructure.Repositories.Appointment;
 using PrivateHospitals.Infrastructure.Repositories.Doctor;
 using PrivateHospitals.Infrastructure.Repositories.Patient;
 using PrivateHospitals.Infrastructure.Repositories.User;
+using PrivateHospitals.Infrastructure.Repositories.WorkingHours;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -81,6 +85,8 @@ builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IWorkingHourseRepository, WorkingHourseRepository>();
+builder.Services.AddScoped<IWorkingHourseService, WorkingHoursService>();
 
 
 

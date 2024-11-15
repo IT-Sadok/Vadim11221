@@ -15,4 +15,6 @@ public class Doctor: AppUser
     public List<MedicalCard> MedicalCardsOfPatients { get; set; }
     
     public List<Appointment>? Appointmants { get; set; }
+    
+    public List<WorkingHours>? WorkingHours { get; set; }
 }

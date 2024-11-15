@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PrivateHospitals.Infrastructure.Data;
@@ -11,9 +12,11 @@ using PrivateHospitals.Infrastructure.Data;
 namespace PrivateHospitals.Data.Migrations
 {
     [DbContext(typeof(HospitalDbContext))]
-    partial class HospitalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241114215314_UpdateAppointment")]
+    partial class UpdateAppointment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,13 +53,13 @@ namespace PrivateHospitals.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a2ad768e-fad7-47e1-b9eb-4603397c45b1",
+                            Id = "01de6bbf-a9ae-45a6-8e79-e0ff40fe3057",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "f4b0bfbd-43bb-4949-9781-b799f3ce2a94",
+                            Id = "9ea68a5d-702e-4855-b6bf-58514f8766a8",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });
@@ -176,8 +179,8 @@ namespace PrivateHospitals.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AppointmentId"));
 
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
+                    b.Property<int>("Day")
+                        .HasColumnType("integer");
 
                     b.Property<string>("DoctorId")
                         .IsRequired()
@@ -319,8 +322,8 @@ namespace PrivateHospitals.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("HoursId"));
 
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
+                    b.Property<int>("Day")
+                        .HasColumnType("integer");
 
                     b.Property<string>("DoctorId")
                         .IsRequired()
@@ -334,7 +337,8 @@ namespace PrivateHospitals.Data.Migrations
 
                     b.HasKey("HoursId");
 
-                    b.HasIndex("DoctorId");
+                    b.HasIndex("DoctorId")
+                        .IsUnique();
 
                     b.ToTable("WorkingHours");
                 });
@@ -453,8 +457,8 @@ namespace PrivateHospitals.Data.Migrations
             modelBuilder.Entity("PrivateHospitals.Core.Models.WorkingHours", b =>
                 {
                     b.HasOne("PrivateHospitals.Core.Models.Users.Doctor", "Doctor")
-                        .WithMany("WorkingHours")
-                        .HasForeignKey("DoctorId")
+                        .WithOne("WorkingHours")
+                        .HasForeignKey("PrivateHospitals.Core.Models.WorkingHours", "DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

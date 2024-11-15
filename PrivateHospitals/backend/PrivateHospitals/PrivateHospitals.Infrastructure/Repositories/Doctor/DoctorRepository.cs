@@ -20,4 +20,18 @@ public class DoctorRepository(
         
         return doctor;
     }
+
+    public async Task<bool> IsDoctorOnWork(DateOnly date, TimeSpan time, string doctorId)
+    {
+        var dateWork = await _context.WorkingHours
+            .FirstOrDefaultAsync(x => x.Date == date && x.StartTime <= time && x.EndTime >= time && x.DoctorId == doctorId);
+
+        if (dateWork == null)
+        {
+            return false;
+        }
+
+        return true;
+    }
+    
 }

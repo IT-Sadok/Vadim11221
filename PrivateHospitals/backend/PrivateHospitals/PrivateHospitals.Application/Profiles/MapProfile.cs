@@ -3,6 +3,7 @@ using PrivateHospitals.Application.Dtos.Appointment;
 using PrivateHospitals.Application.Dtos.Doctor;
 using PrivateHospitals.Application.Dtos.Patient;
 using PrivateHospitals.Application.Dtos.User;
+using PrivateHospitals.Application.Dtos.WorkingHours;
 using PrivateHospitals.Core.Models;
 using PrivateHospitals.Core.Models.Users;
 
@@ -19,5 +20,6 @@ public class MapProfile: Profile
             CreateMap<Appointment, AppointmentDto>().ReverseMap();
             CreateMap<DoctorDto, Doctor>().ReverseMap();
             CreateMap<PatientDto, Patient>().ReverseMap();
+            CreateMap<AddWorkingHourseDto, WorkingHours>().ReverseMap();
     }
 }

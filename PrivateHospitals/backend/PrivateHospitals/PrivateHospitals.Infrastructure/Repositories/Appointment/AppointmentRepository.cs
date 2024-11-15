@@ -28,14 +28,25 @@ public class AppointmentRepository(
         return apointments;
     }
 
-    public async Task<List<Core.Models.Appointment>> GetAppointmentsByDate(DateTime fromDate, DateTime toDate, string patientId)
+    public async Task<List<Core.Models.Appointment>> GetAppointmentsByDate(DateOnly fromDate, DateOnly toDate, string patientId)
     {
         var appointments = await _context.Appointments
-            .Where(x => x.AppointmentDate >= fromDate && x.AppointmentDate <= toDate && x.PatientId == patientId)
             .Include(x => x.Doctor)
             .Include(x => x.Patient)
+            .Where(x => x.Date >= fromDate && x.Date <= toDate)
             .ToListAsync();
         
         return appointments;
+    }
+
+    public async Task<bool> IsDoctorHaveAppointment(DateOnly date, TimeSpan time, string doctorId)
+    {
+        var appointments = await _context.Appointments
+            .Where(x => x.Date == date && x.DoctorId == doctorId)
+            .ToListAsync();
+
+        return appointments.Any(x => 
+            (x.Time >= time && x.Time < time.Add(TimeSpan.FromMinutes(15))) ||
+            (time >= x.Time && time < x.Time + TimeSpan.FromMinutes(15)));
     }
 }

@@ -17,9 +17,11 @@ public class CreateAppointmentValidation: AbstractValidator<CreateAppointmentDto
         RuleFor(x => x.DoctorLastName)
             .NotEmpty().WithMessage("Doctor last name is required")
             .Matches("^[A-Za-z]+$").WithMessage("Doctor last name must contain only letters");
-
+        
         RuleFor(x => x.Date)
-            .NotEmpty().WithMessage("Appointment date is required")
-            .Must(date => date > DateTime.UtcNow).WithMessage("Appointment date must be in the future");
+            .NotEmpty().WithMessage("Date is required");
+        
+        RuleFor(x => x.Time)
+            .NotEmpty().WithMessage("Time is required");
     }
 }
