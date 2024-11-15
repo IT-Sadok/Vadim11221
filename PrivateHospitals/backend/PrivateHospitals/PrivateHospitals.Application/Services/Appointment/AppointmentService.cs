@@ -77,27 +77,25 @@ public class AppointmentService(
 
     public async Task<Result<List<AppointmentDto>>> GetAppointmentByDate(DateOnly fromDate, DateOnly toDate, string patientId)
     {
-        var patient = await _patientRepository.GetPatientByIdAsync(patientId);
-
-        if (patient == null)
-        {
-            return Result<List<AppointmentDto>>.ErrorResponse(new List<string>() {"Patient not found"});
-        }
-
         if (fromDate >= toDate)
         {
-            return Result<List<AppointmentDto>>.ErrorResponse(new List<string>() {"From date cannot be before to date "});
+            return Result<List<AppointmentDto>>.ErrorResponse(new List<string> { "From date cannot be before to date" });
         }
         
-        var appointments =  await _appointmentRepository.GetAppointmentsByDate(fromDate, toDate, patientId);
-
+        var patient = await _patientRepository.GetPatientByIdAsync(patientId);
+        if (patient == null)
+        {
+            return Result<List<AppointmentDto>>.ErrorResponse(new List<string> { "Patient not found" });
+        }
+        
+        var appointments = await _appointmentRepository.GetAppointmentsByDate(fromDate, toDate, patientId);
         if (appointments.Count == 0)
         {
-            return Result<List<AppointmentDto>>.ErrorResponse(new List<string>() {"Appointments not found"});
+            return Result<List<AppointmentDto>>.ErrorResponse(new List<string> { "Appointments not found" });
         }
         
         var appointmentsDto = _mapper.Map<List<AppointmentDto>>(appointments);
-        
         return Result<List<AppointmentDto>>.SuccessResponse(appointmentsDto);
     }
+
 }
