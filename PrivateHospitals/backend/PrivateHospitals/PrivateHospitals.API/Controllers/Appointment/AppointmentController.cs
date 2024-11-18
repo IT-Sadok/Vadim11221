@@ -12,41 +12,64 @@ public class AppointmentController(
 ): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateAppointment([FromBody] CreateAppointmentDto appointmentDto)
+    public async Task<IActionResult> CreateAppointment([FromBody] CreateAppointmentDto createAppointmentDto)
     {
-        var result = await _appointmentService.CreateAppointment(appointmentDto);
+        var result = await _appointmentService.CreateAppointmentAsync(createAppointmentDto);
 
         if (!result.Success)
         {
             return BadRequest(result.Errors);
         }
-        
-        return Ok(result);
+
+        return Ok(result.Data);
     }
-
-    [HttpGet("speciality")]
-    public async Task<IActionResult> GetAppointmentsBySpeciality([FromQuery] DoctorSpecialities speciality, [FromQuery] string patientId)
+    
+    [HttpGet]
+    public async Task<IActionResult> GetAppointments(
+        [FromQuery] DoctorSpecialities? speciality = null,
+        [FromQuery] DateTime? fromDate = null,
+        [FromQuery] DateTime? toDate = null
+    )
     {
-        var result = await _appointmentService.GetAppointmentsBySpecialityId(speciality, patientId);
+        var userId = HttpContext.User.FindFirst("userId")?.Value 
+                     ?? HttpContext.User.FindFirst("sub")?.Value; 
 
-        if (!result.Success)
+        if (string.IsNullOrEmpty(userId))
         {
-            return BadRequest(result.Errors);
+            return Unauthorized("User ID not found in token.");
+        }
+        
+        if (speciality.HasValue)
+        {
+            var result = await _appointmentService.GetAppointmentsBySpecialityAsync(userId, speciality.Value);
+
+            if (!result.Success)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok(result.Data);
+        }
+        
+        if (fromDate.HasValue && toDate.HasValue)
+        {
+            if (fromDate > toDate)
+            {
+                return BadRequest("The 'fromDate' cannot be greater than 'toDate'.");
+            }
+
+            var result = await _appointmentService.GetAppointmentsByDateAsync(userId, fromDate.Value, toDate.Value);
+
+            if (!result.Success)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok(result.Data);
         }
     
-        return Ok(result);
+        return BadRequest("At least one filter (speciality or date range) must be provided.");
     }
 
-    [HttpGet("date")]
-    public async Task<IActionResult> GetAppointmentByDate([FromQuery] DateOnly dateFrom, [FromQuery] DateOnly dateTo, [FromQuery] string patientId)
-    {
-        var result = await _appointmentService.GetAppointmentByDate(dateFrom, dateTo, patientId);
-        
-        if (!result.Success)
-        {
-            return BadRequest(result.Errors);
-        }
-
-        return Ok(result);
-    }
+    
 }

@@ -24,7 +24,7 @@ public class UserService(
     {
         if (registerDto.Role == Roles.Doctor)
         {
-            var doctor = _mapper.Map<Doctor>(registerDto);
+            var doctor = _mapper.Map<Core.Models.Users.Doctor>(registerDto);
             
             if (doctor is null)
             {

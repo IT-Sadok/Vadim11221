@@ -15,33 +15,50 @@ public class ValidationMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        if (context.Request.Method == HttpMethods.Post)
+        if (context.Request.Method == HttpMethods.Post || context.Request.Method == HttpMethods.Put)
         {
             context.Request.EnableBuffering();
-            
-            var body = await context.Request.ReadFromJsonAsync<object>();
 
-            if (body != null)
+            try
             {
-                await ValidateAndRespondAsync(context, body);
+                var body = await context.Request.ReadFromJsonAsync<object>();
+                if (body != null)
+                {
+                    await ValidateAndRespondAsync(context, body);
+                }
             }
+            catch (Exception ex)
+            {
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                context.Response.ContentType = "application/json";
 
-            context.Request.Body.Position = 0;
+                var errorResponse = new { Errors = new[] { "Internal server error occurred.", ex.Message } };
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(errorResponse));
+                return;
+            }
+            finally
+            {
+                context.Request.Body.Position = 0; // Reset position after processing
+            }
         }
 
         await _next(context);
     }
 
-    private async Task ValidateAndRespondAsync<T>(HttpContext context, T dto)
+    private async Task ValidateAndRespondAsync(HttpContext context, object dto)
     {
-        var validator = context.RequestServices.GetService<IValidator<T>>();
+        Console.WriteLine($"Validating DTO of type {dto.GetType().Name}");
+
+        var validatorType = typeof(IValidator<>).MakeGenericType(dto.GetType());
+        var validator = context.RequestServices.GetService(validatorType) as IValidator;
 
         if (validator != null)
         {
-            ValidationResult result = await validator.ValidateAsync(dto);
+            var result = await validator.ValidateAsync(new ValidationContext<object>(dto));
 
             if (!result.IsValid)
             {
+                Console.WriteLine($"Validation failed: {string.Join(", ", result.Errors.Select(e => e.ErrorMessage))}");
                 var errors = result.Errors.Select(f => f.ErrorMessage).ToList();
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 context.Response.ContentType = "application/json";
@@ -49,6 +66,10 @@ public class ValidationMiddleware
                 var errorResponse = new { Errors = errors };
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(errorResponse));
             }
+        }
+        else
+        {
+            Console.WriteLine($"No validator found for type {dto.GetType().Name}");
         }
     }
 }

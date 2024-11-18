@@ -1,3 +1,5 @@
+using System.Net;
+using System.Text.Json;
 using AutoMapper;
 using PrivateHospitals.Application.Dtos.Appointment;
 using PrivateHospitals.Application.Dtos.Doctor;
@@ -5,6 +7,7 @@ using PrivateHospitals.Application.Dtos.Patient;
 using PrivateHospitals.Application.Interfaces.Appointment;
 using PrivateHospitals.Application.Responses;
 using PrivateHospitals.Core.Enum;
+using PrivateHospitals.Core.Models;
 using PrivateHospitals.Core.Models.Users;
 using PrivateHospitals.Infrastructure.Interfaces.Appointment;
 using PrivateHospitals.Infrastructure.Interfaces.Doctor;
@@ -19,83 +22,70 @@ public class AppointmentService(
     IPatientRepository _patientRepository
 ): IAppointmentService
 {
-    public async Task<Result<bool>> CreateAppointment(CreateAppointmentDto appointmentDto)
+    public async Task<Result<bool>> CreateAppointmentAsync(CreateAppointmentDto appointmentDto)
     {
-        var doctorDto = await _doctorRepository
-            .GetDoctorByFullName(appointmentDto.DoctorFirstName, appointmentDto.DoctorLastName);
-
-        if (doctorDto == null)
+        var doctor = await _doctorRepository.GetDoctorByIdAsync(appointmentDto.DoctorId);
+        if (doctor == null)
         {
-            return Result<bool>.ErrorResponse(new List<string>() {"Doctor not found"});
-        }
-
-        var isOnWork = await _doctorRepository.IsDoctorOnWork(appointmentDto.Date, appointmentDto.Time, doctorDto.Id);
-        if (isOnWork == false)
-        {
-            return Result<bool>.ErrorResponse(new List<string>() {"Doctor is not on work"});
+            return Result<bool>.ErrorResponse(new List<string> {"Doctor not found"}); 
         }
         
-        var isHaveAppointment = await _appointmentRepository.IsDoctorHaveAppointment(appointmentDto.Date, appointmentDto.Time, doctorDto.Id);
-        if (isHaveAppointment == true)
+        var patient = await _patientRepository.GetPatientByIdAsync(appointmentDto.PatientId);
+        if (patient == null)
         {
-            return Result<bool>.ErrorResponse(new List<string>() {"Doctor is having appointment"});
+            return Result<bool>.ErrorResponse(new List<string> {"Patient not found"});
         }
 
-        var appointmnet = _mapper.Map<Core.Models.Appointment>(appointmentDto);
-        appointmnet.DoctorId = doctorDto.Id;
-        
-        var result = await _appointmentRepository.CreateAppointmentAsync(appointmnet);
+        var isDoctorAvailable = await _doctorRepository.IsDoctorAvailableAsync(appointmentDto.DoctorId, appointmentDto.Date);
 
-        if (result == false)
+        if (isDoctorAvailable == false)
         {
-            return Result<bool>.ErrorResponse(new List<string>() {"Something went wrong during creating the appointment"});
+            return Result<bool>.ErrorResponse(new List<string> {"Doctor is not available"});
         }
         
+        var appointment = _mapper.Map<Core.Models.Appointment>(appointmentDto);
+        appointment.AppointmentDate = appointmentDto.Date.ToUniversalTime();
+
+        _appointmentRepository.CreateAppointmentAsync(appointment);
+
         return Result<bool>.SuccessResponse(true);
     }
 
-    public async Task<Result<List<AppointmentDto>>> GetAppointmentsBySpecialityId(DoctorSpecialities speciality, string patientId)
+    public async Task<Result<List<AppointmentDto>>> GetAppointmentsBySpecialityAsync(string patientId, DoctorSpecialities? speciality)
     {
-        var patient = await _patientRepository.GetPatientByIdAsync(patientId);
-
-        if (patient == null)
-        {
-            return Result<List<AppointmentDto>>.ErrorResponse(new List<string>() {"Patient not found"});
-        }
-        
-        var appointments = await _appointmentRepository.GetAppointmentsBySpeciality(speciality, patientId);
-        
-        if (appointments.Count == 0)
-        {
-            return Result<List<AppointmentDto>>.ErrorResponse(new List<string>() {"Appointments not found"});
-        }
-        
-        var appointmentsDto = _mapper.Map<List<AppointmentDto>>(appointments);
-        
-        return Result<List<AppointmentDto>>.SuccessResponse(appointmentsDto);
-    }
-
-    public async Task<Result<List<AppointmentDto>>> GetAppointmentByDate(DateOnly fromDate, DateOnly toDate, string patientId)
-    {
-        if (fromDate >= toDate)
-        {
-            return Result<List<AppointmentDto>>.ErrorResponse(new List<string> { "From date cannot be before to date" });
-        }
-        
         var patient = await _patientRepository.GetPatientByIdAsync(patientId);
         if (patient == null)
         {
-            return Result<List<AppointmentDto>>.ErrorResponse(new List<string> { "Patient not found" });
+            return Result<List<AppointmentDto>>.ErrorResponse(new List<string> {"Patient not found"});
         }
-        
-        var appointments = await _appointmentRepository.GetAppointmentsByDate(fromDate, toDate, patientId);
+
+        var appointments = await _appointmentRepository.GetAppointmentBySpecialityAsync(patientId, speciality);
         if (appointments.Count == 0)
         {
-            return Result<List<AppointmentDto>>.ErrorResponse(new List<string> { "Appointments not found" });
+            return Result<List<AppointmentDto>>.ErrorResponse(new List<string> { "Appointment not found" });
         }
+
+        var appointmentDto = _mapper.Map<List<AppointmentDto>>(appointments);
         
-        var appointmentsDto = _mapper.Map<List<AppointmentDto>>(appointments);
-        return Result<List<AppointmentDto>>.SuccessResponse(appointmentsDto);
+        return Result<List<AppointmentDto>>.SuccessResponse(appointmentDto);
     }
 
+    public async Task<Result<List<AppointmentDto>>> GetAppointmentsByDateAsync(string patientId, DateTime? fromDate, DateTime? toDate)
+    {
+        var patient = await _patientRepository.GetPatientByIdAsync(patientId);
+        if (patient == null)
+        {
+            return Result<List<AppointmentDto>>.ErrorResponse(new List<string> {"Patient not found"});
+        }
+
+        var appointments = await _appointmentRepository.GetAppointmentsByDateAsync(patientId, fromDate, toDate);
+        if (appointments.Count == 0)
+        {
+            return Result<List<AppointmentDto>>.ErrorResponse(new List<string> {"Appointment not found"});
+        }
+        
+        var appointmentDto = _mapper.Map<List<AppointmentDto>>(appointments);
+        
+        return Result<List<AppointmentDto>>.SuccessResponse(appointmentDto);
+    }
 }

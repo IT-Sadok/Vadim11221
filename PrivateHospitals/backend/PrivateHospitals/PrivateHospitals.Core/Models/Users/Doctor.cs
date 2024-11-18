@@ -11,10 +11,9 @@ public class Doctor: AppUser
     
     public DoctorSpecialities DoctorSpeciality { get; set; }
     
-    //Change it, write it without Of
-    public List<MedicalCard> MedicalCardsOfPatients { get; set; }
+    public List<MedicalCard> PatientsMedicalCards{ get; set; }
     
     public List<Appointment>? Appointmants { get; set; }
     
-    public List<WorkingHours>? WorkingHours { get; set; }
+    public string WorkingHoursJson { get; set; }
 }

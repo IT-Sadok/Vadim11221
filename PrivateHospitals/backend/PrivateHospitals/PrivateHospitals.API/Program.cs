@@ -3,13 +3,16 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using PrivateHospitals.API.Middleware;
 using PrivateHospitals.Application.Interfaces.Appointment;
+using PrivateHospitals.Application.Interfaces.Doctor;
 using PrivateHospitals.Application.Interfaces.Token;
 using PrivateHospitals.Application.Interfaces.User;
 using PrivateHospitals.Application.Interfaces.WorkingHours;
 using PrivateHospitals.Application.Profiles;
 using PrivateHospitals.Application.Services.Appointment;
+using PrivateHospitals.Application.Services.Doctor;
 using PrivateHospitals.Application.Services.Token;
 using PrivateHospitals.Application.Services.User;
 using PrivateHospitals.Application.Services.WorkingHours;
@@ -63,20 +66,53 @@ builder.Services.AddAuthentication(options =>
                         options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
+    options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuer = true,
         ValidIssuer = builder.Configuration["JWT:Issuer"],
         ValidateAudience = true,
+        ValidateLifetime = true,
         ValidAudience = builder.Configuration["JWT:Audience"],
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
             System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])
-        )
+        ),
+        ClockSkew = TimeSpan.Zero
     };
 });
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "PrivateHospitals API", Version = "v1" });
+    
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter JWT with Bearer prefix (e.g., 'Bearer eyJhbGciOiJIUzI1NiIs...')",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -87,6 +123,7 @@ builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IWorkingHourseRepository, WorkingHourseRepository>();
 builder.Services.AddScoped<IWorkingHourseService, WorkingHoursService>();
+builder.Services.AddScoped<IDoctorService, DoctorService>();
 
 
 
@@ -96,6 +133,14 @@ builder.Services.AddAutoMapper(typeof(MapProfile).Assembly);
 
 
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+    c.RoutePrefix = string.Empty; // Робить Swagger доступним за кореневим URL
+});
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -110,6 +155,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseAuthorization();
+
+
+
+// app.UseHttpsRedirection();
+
 
 app.UseMiddleware<ValidationMiddleware>();
 

@@ -17,7 +17,8 @@ public class MapProfile: Profile
             CreateMap<RegisterDto, Patient>().ReverseMap();
             CreateMap<AppUser, Doctor>().ReverseMap();
             CreateMap<CreateAppointmentDto, Appointment>().ReverseMap();
-            CreateMap<Appointment, AppointmentDto>().ReverseMap();
+            CreateMap<Appointment, AppointmentDto>()
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.AppointmentDate));
             CreateMap<DoctorDto, Doctor>().ReverseMap();
             CreateMap<PatientDto, Patient>().ReverseMap();
             CreateMap<AddWorkingHourseDto, WorkingHours>().ReverseMap();

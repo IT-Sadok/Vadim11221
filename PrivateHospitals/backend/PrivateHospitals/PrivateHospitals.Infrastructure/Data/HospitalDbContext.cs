@@ -17,7 +17,6 @@ public class HospitalDbContext: IdentityDbContext<AppUser>
     }
     
     public DbSet<Appointment> Appointments { get; set; }
-    public DbSet<WorkingHours> WorkingHours { get; set; }
     
 
     protected override void OnModelCreating(ModelBuilder builder)

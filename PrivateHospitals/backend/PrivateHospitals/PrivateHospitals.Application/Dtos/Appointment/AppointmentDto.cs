@@ -7,8 +7,7 @@ namespace PrivateHospitals.Application.Dtos.Appointment;
 
 public record AppointmentDto
 {
-    public required DateOnly Date { get; init; }
-    public required TimeSpan Time { get; init; }
+    public required DateTime Date { get; set; }
     public required AppointmentStatuses Status { get; init; }
     public DoctorDto Doctor { get; init; }
     public PatientDto Patient { get; init; }

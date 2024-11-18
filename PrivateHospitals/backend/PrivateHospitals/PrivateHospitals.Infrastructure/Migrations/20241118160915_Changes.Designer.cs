@@ -9,11 +9,11 @@ using PrivateHospitals.Infrastructure.Data;
 
 #nullable disable
 
-namespace PrivateHospitals.Data.Migrations
+namespace PrivateHospitals.Infrastructure.Migrations
 {
     [DbContext(typeof(HospitalDbContext))]
-    [Migration("20241114180742_WorkingHours")]
-    partial class WorkingHours
+    [Migration("20241118160915_Changes")]
+    partial class Changes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,13 +53,13 @@ namespace PrivateHospitals.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a5e66940-c292-4dfd-b9f1-1957ce14307a",
+                            Id = "0d320224-f8d5-4cd4-9292-6e7dceaa516a",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "3e139008-c270-4a2e-a0de-aa99dd349da8",
+                            Id = "0f1f27fc-ca43-4e5c-acc4-4e23250e8166",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });
@@ -311,41 +311,16 @@ namespace PrivateHospitals.Data.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("PrivateHospitals.Core.Models.WorkingHours", b =>
-                {
-                    b.Property<int>("HoursId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("HoursId"));
-
-                    b.Property<int>("Day")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("DoctorId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<TimeSpan>("EndTime")
-                        .HasColumnType("interval");
-
-                    b.Property<TimeSpan>("StartTime")
-                        .HasColumnType("interval");
-
-                    b.HasKey("HoursId");
-
-                    b.HasIndex("DoctorId")
-                        .IsUnique();
-
-                    b.ToTable("WorkingHours");
-                });
-
             modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Doctor", b =>
                 {
                     b.HasBaseType("PrivateHospitals.Core.Models.Users.AppUser");
 
                     b.Property<int>("DoctorSpeciality")
                         .HasColumnType("integer");
+
+                    b.Property<string>("WorkingHoursJson")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasDiscriminator().HasValue("Doctor");
                 });
@@ -435,7 +410,7 @@ namespace PrivateHospitals.Data.Migrations
             modelBuilder.Entity("PrivateHospitals.Core.Models.MedicalCard", b =>
                 {
                     b.HasOne("PrivateHospitals.Core.Models.Users.Doctor", "Doctor")
-                        .WithMany("MedicalCardsOfPatients")
+                        .WithMany("PatientsMedicalCards")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -451,17 +426,6 @@ namespace PrivateHospitals.Data.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("PrivateHospitals.Core.Models.WorkingHours", b =>
-                {
-                    b.HasOne("PrivateHospitals.Core.Models.Users.Doctor", "Doctor")
-                        .WithOne("WorkingHours")
-                        .HasForeignKey("PrivateHospitals.Core.Models.WorkingHours", "DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-                });
-
             modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Patient", b =>
                 {
                     b.HasOne("PrivateHospitals.Core.Models.MedicalCard", "MedicalCard")
@@ -475,9 +439,7 @@ namespace PrivateHospitals.Data.Migrations
                 {
                     b.Navigation("Appointmants");
 
-                    b.Navigation("MedicalCardsOfPatients");
-
-                    b.Navigation("WorkingHours");
+                    b.Navigation("PatientsMedicalCards");
                 });
 
             modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Patient", b =>

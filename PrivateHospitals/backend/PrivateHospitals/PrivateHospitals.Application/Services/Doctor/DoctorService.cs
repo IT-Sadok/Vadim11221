@@ -1,18 +1,15 @@
 using System.Text.Json;
-using AutoMapper;
-using PrivateHospitals.Application.Dtos.WorkingHours;
-using PrivateHospitals.Application.Interfaces.WorkingHours;
+using PrivateHospitals.Application.Dtos.Doctor;
+using PrivateHospitals.Application.Interfaces.Doctor;
 using PrivateHospitals.Application.Responses;
 using PrivateHospitals.Core.Models;
 using PrivateHospitals.Infrastructure.Interfaces.Doctor;
-using PrivateHospitals.Infrastructure.Interfaces.WorkingHours;
 
-namespace PrivateHospitals.Application.Services.WorkingHours;
+namespace PrivateHospitals.Application.Services.Doctor;
 
-public class WorkingHoursService(
-    IDoctorRepository _doctorRepository, 
-    IMapper _mapper
-): IWorkingHourseService
+public class DoctorService(
+    IDoctorRepository _doctorRepository
+): IDoctorService
 {
     public async Task<Result<bool>> UpdateWorkingHoursAsync(string doctorId, Schedule schedule)
     {
@@ -31,6 +28,7 @@ public class WorkingHoursService(
         
         return Result<bool>.SuccessResponse(true);
     }
+    
 
     public async Task<Result<Schedule>> GetWorkingHoursAsync(string doctorId)
     {
@@ -45,6 +43,7 @@ public class WorkingHoursService(
             return Result<Schedule>.ErrorResponse(new List<string>(){"Working hours is not found"});
         }
         
-        return JsonSerializer.Deserialize<Result<Schedule>>(doctor.WorkingHoursJson);
+        var schedule = JsonSerializer.Deserialize<Schedule>(doctor.WorkingHoursJson);
+        return Result<Schedule>.SuccessResponse(schedule);
     }
 }
