@@ -59,6 +59,11 @@ public class AppointmentService(
             return Result<List<AppointmentDto>>.ErrorResponse(new List<string> {"Patient not found"});
         }
 
+        if (speciality == null)
+        {
+            return Result<List<AppointmentDto>>.ErrorResponse(new List<string> {"Doctor speciality can`t be null"});
+        }
+
         var appointments = await _appointmentRepository.GetAppointmentBySpecialityAsync(patientId, speciality);
         if (appointments.Count == 0)
         {
@@ -76,6 +81,11 @@ public class AppointmentService(
         if (patient == null)
         {
             return Result<List<AppointmentDto>>.ErrorResponse(new List<string> {"Patient not found"});
+        }
+
+        if (fromDate == null || toDate == null)
+        {
+            return Result<List<AppointmentDto>>.ErrorResponse(new List<string> {"FromDate and ToDate cannot be null"});
         }
 
         var appointments = await _appointmentRepository.GetAppointmentsByDateAsync(patientId, fromDate, toDate);

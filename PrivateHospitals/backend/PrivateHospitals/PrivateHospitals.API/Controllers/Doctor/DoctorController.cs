@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PrivateHospitals.Application.Dtos.Doctor;
 using PrivateHospitals.Application.Interfaces.Doctor;
-using PrivateHospitals.Application.Interfaces.WorkingHours;
-using PrivateHospitals.Core.Models;
+
 
 namespace PrivateHospitals.API.Controllers.Doctor;
 

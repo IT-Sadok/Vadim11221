@@ -13,7 +13,7 @@ public class DoctorService(
 {
     public async Task<Result<bool>> UpdateWorkingHoursAsync(string doctorId, Schedule schedule)
     {
-        var doctor = await _doctorRepository.UpdateWorkingHoursAsync(doctorId, schedule);
+        var doctor = await _doctorRepository.GetDoctorByIdAsync(doctorId);
         if (doctor == null)
         {
             return Result<bool>.ErrorResponse(new List<string>() {"Doctor not found"});
@@ -21,7 +21,7 @@ public class DoctorService(
         
         if (schedule == null || !schedule.Days.Any())
         {
-            return Result<bool>.ErrorResponse(new List<string>() {"Schedule cannot be empty"});
+            return Result<bool>.ErrorResponse(new List<string>() {"Problems with schedule"});
         }
         
         await _doctorRepository.UpdateWorkingHoursAsync(doctorId, schedule);
