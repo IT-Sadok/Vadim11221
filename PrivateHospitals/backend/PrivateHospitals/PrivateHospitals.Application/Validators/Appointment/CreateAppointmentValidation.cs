@@ -7,9 +7,6 @@ public class CreateAppointmentValidation: AbstractValidator<CreateAppointmentDto
 {
     public CreateAppointmentValidation()
     {
-        RuleFor(x => x.PatientId)
-            .NotEmpty().WithMessage("PatientID is required");
-
         RuleFor(x => x.DoctorId)
             .NotEmpty().WithMessage("DoctorID is required");
             

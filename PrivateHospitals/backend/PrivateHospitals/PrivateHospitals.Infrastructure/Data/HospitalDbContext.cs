@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +24,17 @@ public class HospitalDbContext: IdentityDbContext<AppUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<Doctor>()
+            .HasBaseType<AppUser>();
+        
+        builder.Entity<Doctor>()
+            .Property(d => d.WorkingHours)
+            .HasColumnType("jsonb")
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }),
+                v => JsonSerializer.Deserialize<List<WorkingHours>>(v, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+            );
 
         builder.Entity<AppUser>()
             .HasDiscriminator<string>("Role")

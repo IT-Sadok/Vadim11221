@@ -13,5 +13,5 @@ public class Patient: AppUser
      public int? MedicalCardId { get; set; }
      public MedicalCard? MedicalCard { get; set; }
 
-     public List<Appointment>? Appointmants { get; set; }
+     public List<Appointment>? Appointments { get; set; }
 }

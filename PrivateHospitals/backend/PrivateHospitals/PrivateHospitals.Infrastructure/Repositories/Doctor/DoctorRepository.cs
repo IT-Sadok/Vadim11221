@@ -13,58 +13,62 @@ public class DoctorRepository(
     HospitalDbContext _context
 ): IDoctorRepository
 {
-    public async Task<Core.Models.Users.Doctor> GetDoctorByIdAsync(string doctorId)
-    {
-        var doctor = await _context.Users
-            .OfType<Core.Models.Users.Doctor>()
-            .FirstOrDefaultAsync(x => x.Id == doctorId);
-        
-        return doctor;
-    }
-
-    public async Task<bool> UpdateWorkingHoursAsync(string doctorId, Schedule schedule)
-    {
-        var doctor = await GetDoctorByIdAsync(doctorId);    
-        
-        doctor.WorkingHoursJson = JsonSerializer.Serialize(schedule);
+     public async Task<Core.Models.Users.Doctor> GetDoctorByIdAsync(string doctorId)
+     {
+         var doctor = await _context.Users
+             .OfType<Core.Models.Users.Doctor>()
+             .FirstOrDefaultAsync(x => x.Id == doctorId);
+         
+         return doctor;
+     }
+    
+     public async Task<bool> UpdateWorkingHoursAsync(string doctorId, List<WorkingHours> workingHours)
+     {
+        var doctor = await GetDoctorByIdAsync(doctorId);
+        doctor.WorkingHours = workingHours;
         
         _context.Users.Update(doctor);
         await _context.SaveChangesAsync();
 
         return true;
-    }
+     }
 
-    public async Task<bool> IsDoctorAvailableAsync(string doctorId, DateTime appointmentDate)
-    {
-        var doctor = await GetDoctorByIdAsync(doctorId);
-        
-        var schedule = JsonSerializer.Deserialize<Schedule>(doctor.WorkingHoursJson);
-        
-        var dayOfWeek = appointmentDate.DayOfWeek.ToString();
+     public async Task<bool> IsDoctorAvailableAsync(string doctorId, DateTime appointmentDate)
+     {
+         var doctor = await GetDoctorByIdAsync(doctorId);
+         
+         var appointmentDay = appointmentDate.DayOfWeek;
+         var appointmentTime = appointmentDate.TimeOfDay;
 
-        if (!schedule.Days.ContainsKey(dayOfWeek))
-        {
-            return false;
-        }
-        
-        var workingHours = schedule.Days[dayOfWeek];
+         foreach (var item in doctor.WorkingHours)
+         {
+             if (item.Day == appointmentDay)
+             {
+                 if (item.StartTime <= appointmentTime && item.EndTime >= appointmentTime)
+                 {
+                     return true;
+                 }
+             }
+         }
 
-        var appointmentTime = appointmentDate.TimeOfDay;
+         return false;
+     }
 
-        if (appointmentTime >= workingHours.StartTime && appointmentTime <= workingHours.EndTime)
-        {
-            return true;
-        }
+     public async Task<List<Core.Models.Users.Doctor>> GetWorkingHoursAsync(string doctorId)
+     {
+         var doctor = await GetDoctorByIdAsync(doctorId);
 
-        return false;
-    }
-
-    public async Task<Core.Models.Users.Doctor> GetDoctorBySpecialityAsync(DoctorSpecialities speciality)
-    {
-        var doctor = await _context.Users
-            .OfType<Core.Models.Users.Doctor>()
-            .FirstOrDefaultAsync(x => x.DoctorSpeciality == speciality);
-
-        return doctor;
-    }
+         var workingHours = await _context.Users
+             .OfType<Core.Models.Users.Doctor>()
+             .Where(x => x.Id == doctorId)
+             .Select(x => new Core.Models.Users.Doctor
+             {
+                 FirstName = x.FirstName,
+                 LastName = x.LastName,
+                 WorkingHours = x.WorkingHours
+             }).ToListAsync();
+         
+         return workingHours;
+     }
+     
 }

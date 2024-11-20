@@ -13,7 +13,7 @@ public class Doctor: AppUser
     
     public List<MedicalCard> PatientsMedicalCards{ get; set; }
     
-    public List<Appointment>? Appointmants { get; set; }
-    
-    public string WorkingHoursJson { get; set; }
+    public List<Appointment>? Appointments { get; set; }
+
+    public List<WorkingHours>? WorkingHours { get; set; }
 }
