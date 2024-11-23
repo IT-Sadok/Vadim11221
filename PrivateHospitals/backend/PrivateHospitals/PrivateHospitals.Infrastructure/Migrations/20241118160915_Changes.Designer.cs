@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PrivateHospitals.Infrastructure.Data;
@@ -11,9 +12,11 @@ using PrivateHospitals.Infrastructure.Data;
 namespace PrivateHospitals.Infrastructure.Migrations
 {
     [DbContext(typeof(HospitalDbContext))]
-    partial class HospitalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241118160915_Changes")]
+    partial class Changes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,13 +53,13 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a6aa9144-92d0-4bcd-bd21-43e345e5d126",
+                            Id = "0d320224-f8d5-4cd4-9292-6e7dceaa516a",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "131fc64b-3d70-4265-97bf-5a4a3cc66e89",
+                            Id = "0f1f27fc-ca43-4e5c-acc4-4e23250e8166",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });
@@ -315,8 +318,9 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.Property<int>("DoctorSpeciality")
                         .HasColumnType("integer");
 
-                    b.Property<string>("WorkingHours")
-                        .HasColumnType("jsonb");
+                    b.Property<string>("WorkingHoursJson")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasDiscriminator().HasValue("Doctor");
                 });

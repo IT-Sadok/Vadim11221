@@ -9,11 +9,11 @@ using PrivateHospitals.Infrastructure.Data;
 
 #nullable disable
 
-namespace PrivateHospitals.Data.Migrations
+namespace PrivateHospitals.Infrastructure.Migrations
 {
     [DbContext(typeof(HospitalDbContext))]
-    [Migration("20241112091711_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241119164310_Changes2")]
+    partial class Changes2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,13 +53,13 @@ namespace PrivateHospitals.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "57de60e8-a2e7-466a-a630-8d80d1b1bb68",
+                            Id = "a6aa9144-92d0-4bcd-bd21-43e345e5d126",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "1ef6346b-9bdf-4c1e-8a9f-9d83126151c4",
+                            Id = "131fc64b-3d70-4265-97bf-5a4a3cc66e89",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });
@@ -171,7 +171,66 @@ namespace PrivateHospitals.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PrivateHospitals.Core.Models.AppUser", b =>
+            modelBuilder.Entity("PrivateHospitals.Core.Models.Appointment", b =>
+                {
+                    b.Property<int>("AppointmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AppointmentId"));
+
+                    b.Property<DateTime>("AppointmentDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DoctorId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PatientId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("AppointmentId");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("PrivateHospitals.Core.Models.MedicalCard", b =>
+                {
+                    b.Property<int>("MedicalCardId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MedicalCardId"));
+
+                    b.Property<string>("DoctorId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PatientId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("VisitDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("MedicalCardId");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("MedicalCard");
+                });
+
+            modelBuilder.Entity("PrivateHospitals.Core.Models.Users.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -223,7 +282,8 @@ namespace PrivateHospitals.Data.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -245,6 +305,35 @@ namespace PrivateHospitals.Data.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Role").HasValue("AppUser");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Doctor", b =>
+                {
+                    b.HasBaseType("PrivateHospitals.Core.Models.Users.AppUser");
+
+                    b.Property<int>("DoctorSpeciality")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("WorkingHours")
+                        .HasColumnType("jsonb");
+
+                    b.HasDiscriminator().HasValue("Doctor");
+                });
+
+            modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Patient", b =>
+                {
+                    b.HasBaseType("PrivateHospitals.Core.Models.Users.AppUser");
+
+                    b.Property<int?>("MedicalCardId")
+                        .HasColumnType("integer");
+
+                    b.HasIndex("MedicalCardId");
+
+                    b.HasDiscriminator().HasValue("Patient");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -258,7 +347,7 @@ namespace PrivateHospitals.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("PrivateHospitals.Core.Models.AppUser", null)
+                    b.HasOne("PrivateHospitals.Core.Models.Users.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -267,7 +356,7 @@ namespace PrivateHospitals.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("PrivateHospitals.Core.Models.AppUser", null)
+                    b.HasOne("PrivateHospitals.Core.Models.Users.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -282,7 +371,7 @@ namespace PrivateHospitals.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PrivateHospitals.Core.Models.AppUser", null)
+                    b.HasOne("PrivateHospitals.Core.Models.Users.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -291,11 +380,70 @@ namespace PrivateHospitals.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("PrivateHospitals.Core.Models.AppUser", null)
+                    b.HasOne("PrivateHospitals.Core.Models.Users.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PrivateHospitals.Core.Models.Appointment", b =>
+                {
+                    b.HasOne("PrivateHospitals.Core.Models.Users.Doctor", "Doctor")
+                        .WithMany("Appointmants")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrivateHospitals.Core.Models.Users.Patient", "Patient")
+                        .WithMany("Appointmants")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("PrivateHospitals.Core.Models.MedicalCard", b =>
+                {
+                    b.HasOne("PrivateHospitals.Core.Models.Users.Doctor", "Doctor")
+                        .WithMany("PatientsMedicalCards")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrivateHospitals.Core.Models.Users.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Patient", b =>
+                {
+                    b.HasOne("PrivateHospitals.Core.Models.MedicalCard", "MedicalCard")
+                        .WithMany()
+                        .HasForeignKey("MedicalCardId");
+
+                    b.Navigation("MedicalCard");
+                });
+
+            modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Doctor", b =>
+                {
+                    b.Navigation("Appointmants");
+
+                    b.Navigation("PatientsMedicalCards");
+                });
+
+            modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Patient", b =>
+                {
+                    b.Navigation("Appointmants");
                 });
 #pragma warning restore 612, 618
         }

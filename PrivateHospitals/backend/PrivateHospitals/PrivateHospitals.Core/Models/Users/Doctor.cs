@@ -4,7 +4,16 @@ namespace PrivateHospitals.Core.Models.Users;
 
 public class Doctor: AppUser
 {
-    public DoctorSpecialities DoctorSpeciality { get; set; } = DoctorSpecialities.Doctor;
+    public Doctor()
+    {
+        Role = Roles.Doctor;
+    }
     
-    public List<MedicalCard> MedicalCardsOfPatients { get; set; }
+    public DoctorSpecialities DoctorSpeciality { get; set; }
+    
+    public List<MedicalCard> PatientsMedicalCards{ get; set; }
+    
+    public List<Appointment>? Appointments { get; set; }
+
+    public List<WorkingHours>? WorkingHours { get; set; }
 }

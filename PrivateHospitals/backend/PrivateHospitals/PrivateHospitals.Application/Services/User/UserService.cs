@@ -5,6 +5,7 @@ using PrivateHospitals.Application.Interfaces;
 using PrivateHospitals.Application.Interfaces.Token;
 using PrivateHospitals.Application.Interfaces.User;
 using PrivateHospitals.Application.Responses;
+using PrivateHospitals.Core.Enum;
 using PrivateHospitals.Core.Models;
 using PrivateHospitals.Core.Models.Users;
 using PrivateHospitals.Infrastructure.Interfaces.User;
@@ -23,12 +24,14 @@ public class UserService(
     {
         if (registerDto.Role == Roles.Doctor)
         {
-            var doctor = _mapper.Map<Doctor>(registerDto);
+            var doctor = _mapper.Map<Core.Models.Users.Doctor>(registerDto);
             
             if (doctor is null)
             {
                 return Result<bool>.ErrorResponse(new List<string> { "Doctor is null" });
             }
+            
+            doctor.DoctorSpeciality = DoctorSpecialities.Doctor;
             
             var result = await _userRepository.CreateUserAsync(doctor, registerDto.Password);
             if (!result.Succeeded)

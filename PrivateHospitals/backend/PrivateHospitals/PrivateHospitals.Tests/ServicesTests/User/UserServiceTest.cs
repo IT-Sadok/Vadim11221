@@ -57,8 +57,8 @@ public class UserServiceTests
             Password = "Doctor112281_"
         };
 
-        var doctor = new Doctor();
-        _mapperMock.Setup(x => x.Map<Doctor>(registerDto)).Returns(doctor);
+        var doctor = new Core.Models.Users.Doctor();
+        _mapperMock.Setup(x => x.Map<Core.Models.Users.Doctor>(registerDto)).Returns(doctor);
         _userRepositoryMock.Setup(x => x.CreateUserAsync(doctor, registerDto.Password))
             .ReturnsAsync(IdentityResult.Success);
 
@@ -108,8 +108,8 @@ public class UserServiceTests
             Password = "Doctor112281_"
         };
 
-        var doctor = new Doctor();
-        _mapperMock.Setup(x => x.Map<Doctor>(registerDto)).Returns(doctor);
+        var doctor = new Core.Models.Users.Doctor();
+        _mapperMock.Setup(x => x.Map<Core.Models.Users.Doctor>(registerDto)).Returns(doctor);
         _userRepositoryMock.Setup(x => x.CreateUserAsync(doctor, registerDto.Password))
             .ReturnsAsync(IdentityResult.Failed());
         

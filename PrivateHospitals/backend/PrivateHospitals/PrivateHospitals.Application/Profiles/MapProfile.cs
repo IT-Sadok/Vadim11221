@@ -1,5 +1,9 @@
 using AutoMapper;
+using PrivateHospitals.Application.Dtos.Appointment;
+using PrivateHospitals.Application.Dtos.Doctor;
+using PrivateHospitals.Application.Dtos.Patient;
 using PrivateHospitals.Application.Dtos.User;
+using PrivateHospitals.Application.Dtos.WorkingHours;
 using PrivateHospitals.Core.Models;
 using PrivateHospitals.Core.Models.Users;
 
@@ -11,5 +15,17 @@ public class MapProfile: Profile
     {
             CreateMap<RegisterDto, Doctor>().ReverseMap();
             CreateMap<RegisterDto, Patient>().ReverseMap();
+            CreateMap<AppUser, Doctor>().ReverseMap();
+            CreateMap<CreateAppointmentDto, Appointment>().ReverseMap();
+            CreateMap<Appointment, AppointmentDto>()
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.AppointmentDate));
+            CreateMap<DoctorDto, Doctor>().ReverseMap();
+            CreateMap<PatientDto, Patient>().ReverseMap();
+            CreateMap<AddWorkingHourseDto, WorkingHours>().ReverseMap();
+
+            CreateMap<DoctorUpdateHours, Doctor>().ReverseMap();
+            CreateMap(typeof(FilteredResult<Appointment>), typeof(FilteredResult<AppointmentDto>)).ReverseMap();
+            CreateMap<Doctor, GetDoctorHoursDto>().ReverseMap();
     }
 }
+
