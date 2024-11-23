@@ -26,29 +26,19 @@ public class AppointmentRepository(
         if (filter.Speciality.HasValue)
         {
             query = query
-                .Where(x => x.Doctor.DoctorSpeciality == filter.Speciality && x.PatientId == patientId)
-                .Include(x => x.Doctor);
+                .Where(x => x.Doctor.DoctorSpeciality == filter.Speciality && x.PatientId == patientId);
         }
         
         if (filter.FromDate.HasValue)
         {
             query = query
-                .Where(x => x.PatientId == patientId && x.AppointmentDate >= filter.FromDate)
-                .Include(x => x.Doctor);
+                .Where(x => x.PatientId == patientId && x.AppointmentDate >= filter.FromDate);
         }
         
         if (filter.ToDate.HasValue)
         {
             query = query
-                .Where(x => x.PatientId == patientId && x.AppointmentDate <= filter.ToDate)
-                .Include(x => x.Doctor);
-        }
-        
-        if (filter.FromDate.HasValue && filter.ToDate.HasValue)
-        {
-            query = query
-                .Where(x => x.PatientId == patientId && x.AppointmentDate >= filter.FromDate &&
-                            x.AppointmentDate <= filter.ToDate).Include(x => x.Doctor);
+                .Where(x => x.PatientId == patientId && x.AppointmentDate <= filter.ToDate);
         }
 
         var totalCount = await query.CountAsync();
@@ -56,6 +46,21 @@ public class AppointmentRepository(
         var items = await query
             .Skip((paging.Page - 1) * paging.PageSize)
             .Take(paging.PageSize)
+            .Select(x => new Core.Models.Appointment
+            {
+                Doctor = new Core.Models.Users.Doctor()
+                {
+                    FirstName = x.Doctor.FirstName,
+                    LastName = x.Doctor.LastName,
+                    DoctorSpeciality = x.Doctor.DoctorSpeciality
+                },
+                Patient = new Core.Models.Users.Patient()
+                {
+                    FirstName = x.Patient.FirstName,
+                    LastName = x.Patient.LastName,
+                },
+                AppointmentDate = x.AppointmentDate
+            })
             .ToListAsync();
 
         return new FilteredResult<Core.Models.Appointment>()
