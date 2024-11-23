@@ -18,75 +18,50 @@ public class AppointmentRepository(
         return true;
     }
 
-    public async Task<PaginationResult<Core.Models.Appointment>> GetAppointmentBySpecialityAsync(
-        AppointmentFilter appointmentFilter, string patientId)
+    public async Task<FilteredResult<Core.Models.Appointment>> GetAppointmentsByFilter(AppointmentFilter filter, Paging paging, string patientId)
     {
-        var totalItems = await _context.Appointments
-            .AsNoTracking()
-            .Where(x => x.Doctor.DoctorSpeciality == appointmentFilter.Speciality && x.PatientId == patientId)
-            .CountAsync();
+        var query = _context.Set<Core.Models.Appointment>()
+            .AsQueryable();
 
-        var items = await _context.Appointments
-            .AsNoTracking()
-            .Where(x => x.Doctor.DoctorSpeciality == appointmentFilter.Speciality && x.PatientId == patientId)
-            .OrderBy(x => x.AppointmentDate) // Сортування по AppointmentDate
-            .Skip((appointmentFilter.PageNumber - 1) * appointmentFilter.PageSize)
-            .Take(appointmentFilter.PageSize)
-            .Select(x => new Core.Models.Appointment
-            {
-                AppointmentDate = x.AppointmentDate,
-                Doctor = new Core.Models.Users.Doctor()
-                {
-                    FirstName = x.Doctor.FirstName,
-                    LastName = x.Doctor.LastName
-                },
-                Patient = new Core.Models.Users.Patient()
-                {
-                    FirstName = x.Patient.FirstName,
-                    LastName = x.Patient.LastName
-                },
-                Status = x.Status
-            })
+        if (filter.Speciality.HasValue)
+        {
+            query = query
+                .Where(x => x.Doctor.DoctorSpeciality == filter.Speciality && x.PatientId == patientId)
+                .Include(x => x.Doctor);
+        }
+        
+        if (filter.FromDate.HasValue)
+        {
+            query = query
+                .Where(x => x.PatientId == patientId && x.AppointmentDate >= filter.FromDate)
+                .Include(x => x.Doctor);
+        }
+        
+        if (filter.ToDate.HasValue)
+        {
+            query = query
+                .Where(x => x.PatientId == patientId && x.AppointmentDate <= filter.ToDate)
+                .Include(x => x.Doctor);
+        }
+        
+        if (filter.FromDate.HasValue && filter.ToDate.HasValue)
+        {
+            query = query
+                .Where(x => x.PatientId == patientId && x.AppointmentDate >= filter.FromDate &&
+                            x.AppointmentDate <= filter.ToDate).Include(x => x.Doctor);
+        }
+
+        var totalCount = await query.CountAsync();
+        
+        var items = await query
+            .Skip((paging.Page - 1) * paging.PageSize)
+            .Take(paging.PageSize)
             .ToListAsync();
 
-        var result = new PaginationResult<Core.Models.Appointment>(items, totalItems, appointmentFilter.PageNumber,
-            appointmentFilter.PageSize);
-
-        return result;
-    }
-
-    public async Task<PaginationResult<Core.Models.Appointment>> GetAppointmentsByDateAsync(AppointmentFilter appointmentFilter, string patientId)
-    { 
-        var totalItems = await _context.Appointments
-            .AsNoTracking()
-            .Where(x => x.AppointmentDate <= appointmentFilter.FromDate && x.AppointmentDate >= appointmentFilter.ToDate && x.PatientId == patientId)
-            .CountAsync();
-        
-        var items = await _context.Appointments
-            .AsNoTracking()
-            .Where(x => x.AppointmentDate >= appointmentFilter.FromDate && x.AppointmentDate <= appointmentFilter.ToDate && x.PatientId == patientId)
-            .OrderBy(x => x.AppointmentDate)
-            .Skip((appointmentFilter.PageNumber - 1) * appointmentFilter.PageSize)
-            .Take(appointmentFilter.PageSize)
-            .Select(x => new Core.Models.Appointment
-            {
-                AppointmentDate = x.AppointmentDate,
-                Doctor = new Core.Models.Users.Doctor()
-                {
-                    FirstName = x.Doctor.FirstName,
-                    LastName = x.Doctor.LastName
-                },
-                Patient = new Core.Models.Users.Patient()
-                {
-                    FirstName = x.Patient.FirstName,
-                    LastName = x.Patient.LastName
-                },
-                Status = x.Status
-            }).ToListAsync();
-        
-        var result = new PaginationResult<Core.Models.Appointment>(items, totalItems, appointmentFilter.PageNumber,
-            appointmentFilter.PageSize);
-
-        return result;
+        return new FilteredResult<Core.Models.Appointment>()
+        {
+            Items = items,
+            TotalCount = totalCount
+        };
     }
 }

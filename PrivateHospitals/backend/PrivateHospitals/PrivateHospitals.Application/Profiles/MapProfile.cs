@@ -24,7 +24,8 @@ public class MapProfile: Profile
             CreateMap<AddWorkingHourseDto, WorkingHours>().ReverseMap();
 
             CreateMap<DoctorUpdateHours, Doctor>().ReverseMap();
-            CreateMap(typeof(PaginationResult<Appointment>), typeof(PaginationResult<AppointmentDto>));
+            CreateMap(typeof(FilteredResult<Appointment>), typeof(FilteredResult<AppointmentDto>)).ReverseMap();
             CreateMap<Doctor, GetDoctorHoursDto>().ReverseMap();
     }
 }
+

@@ -49,7 +49,7 @@ public class DoctorService(
          var doctor = await _doctorRepository.GetDoctorByIdAsync(doctorId);
          if (doctor == null)
          {
-             return Result<List<GetDoctorHoursDto>>.ErrorResponse(new List<string>() {"Doctor not found"});
+             return Result<List<GetDoctorHoursDto>>.ErrorResponse(new List<string>() {"Doctor is not found"});
          }
     
          if (doctor.WorkingHours.Count == 0)

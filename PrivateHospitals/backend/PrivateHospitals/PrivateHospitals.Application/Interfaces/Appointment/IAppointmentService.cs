@@ -8,7 +8,5 @@ namespace PrivateHospitals.Application.Interfaces.Appointment;
 public interface IAppointmentService
 {
     Task<Result<bool>> CreateAppointmentAsync(CreateAppointmentDto appointmentDto, string patientId);
-    // Task<Result<List<AppointmentDto>>> GetAppointmentsBySpecialityAsync(string patientId, DoctorSpecialities? speciality);
-    // Task<Result<List<AppointmentDto>>> GetAppointmentsByDateAsync(string patientId, DateTime? fromDate, DateTime? toDate);
-    Task<Result<PaginationResult<AppointmentDto>>> GetAppointmentsAsync(AppointmentFilter appointmentFilter, string patientId);
+    Task<Result<FilteredResult<AppointmentDto>>> GetAppointmentsAsync(AppointmentFilterDto appointmentFilterDto, string patientId);
 }
