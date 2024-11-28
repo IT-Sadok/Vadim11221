@@ -50,13 +50,13 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a6aa9144-92d0-4bcd-bd21-43e345e5d126",
+                            Id = "4aad1793-8f70-4afd-9520-766004080070",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "131fc64b-3d70-4265-97bf-5a4a3cc66e89",
+                            Id = "ae0edfac-05bd-4547-8d1f-f486be7ae4b7",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });
@@ -183,6 +183,9 @@ namespace PrivateHospitals.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ExternalId")
+                        .HasColumnType("text");
+
                     b.Property<string>("PatientId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -245,6 +248,9 @@ namespace PrivateHospitals.Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("ExternalId")
+                        .HasColumnType("text");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -387,13 +393,13 @@ namespace PrivateHospitals.Infrastructure.Migrations
             modelBuilder.Entity("PrivateHospitals.Core.Models.Appointment", b =>
                 {
                     b.HasOne("PrivateHospitals.Core.Models.Users.Doctor", "Doctor")
-                        .WithMany("Appointmants")
+                        .WithMany("Appointments")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PrivateHospitals.Core.Models.Users.Patient", "Patient")
-                        .WithMany("Appointmants")
+                        .WithMany("Appointments")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -433,14 +439,14 @@ namespace PrivateHospitals.Infrastructure.Migrations
 
             modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Doctor", b =>
                 {
-                    b.Navigation("Appointmants");
+                    b.Navigation("Appointments");
 
                     b.Navigation("PatientsMedicalCards");
                 });
 
             modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Patient", b =>
                 {
-                    b.Navigation("Appointmants");
+                    b.Navigation("Appointments");
                 });
 #pragma warning restore 612, 618
         }

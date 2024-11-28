@@ -7,8 +7,9 @@ namespace PrivateHospitals.Core.Models;
 
 public class Appointment
 {
-    [Key]
+    [Key] 
     public int AppointmentId { get; set; }
+    public string? ExternalId { get; set; }
     public DateTime AppointmentDate { get; set; }
 
     public AppointmentStatuses Status { get; set; } = AppointmentStatuses.Scheduled;

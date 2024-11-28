@@ -1,0 +1,24 @@
+﻿{
+  "Doctors": [
+    { "ExternalId": "doc-1", "FirstName": "John", "LastName": "Doe", "UserName": "johndoe", "Speciality": 0 },
+    { "ExternalId": "doc-2", "FirstName": "Jane", "LastName": "Smith", "UserName": "janesmith", "Speciality": 0 }
+  ],
+  "Patients": [
+    { "ExternalId": "pat-1", "FirstName": "Alice", "LastName": "Brown", "UserName": "alicebrown" },
+    { "ExternalId": "pat-2", "FirstName": "Bob", "LastName": "Johnson", "UserName": "bobjohnson" }
+  ],
+  "Appointments": [
+    {
+      "ExternalId": "app-1",
+      "DoctorExternalId": "doc-1",
+      "PatientExternalId": "pat-1",
+      "Date": "2024-11-27T10:00:00"
+    },
+    {
+      "ExternalId": "app-2",
+      "DoctorExternalId": "doc-2",
+      "PatientExternalId": "pat-2",
+      "Date": "2024-11-28T14:30:00"
+    }
+  ]
+}
