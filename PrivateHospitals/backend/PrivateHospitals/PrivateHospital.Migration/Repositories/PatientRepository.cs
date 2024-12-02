@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using PrivateHospital.Migration.Dto.Interfaces;
+using PrivateHospital.Migration.Interfaces;
 using PrivateHospitals.Core.Models.Users;
 using PrivateHospitals.Infrastructure.Data;
 
 namespace PrivateHospital.Migration.Dto.Repositories;
 
-public class PatientRepository(HospitalDbContext _context): IRepository<Patient>
+public class PatientRepository(HospitalDbContext _context): IRepository<Patient>, IIdRepository<Patient>
 {
     public async Task<Patient> GetByExternalId(string externalId)
     {
@@ -17,6 +18,5 @@ public class PatientRepository(HospitalDbContext _context): IRepository<Patient>
     public async Task AddAsync(Patient entity)
     {
         _context.Users.Add(entity);
-        await _context.SaveChangesAsync();
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PrivateHospitals.Infrastructure.Data;
@@ -11,9 +12,11 @@ using PrivateHospitals.Infrastructure.Data;
 namespace PrivateHospitals.Infrastructure.Migrations
 {
     [DbContext(typeof(HospitalDbContext))]
-    partial class HospitalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241130224714_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,13 +53,13 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2794bf9a-fa79-4b07-abb8-6664942c57a0",
+                            Id = "c921064e-1f6d-4f5e-ab3f-5f4237a97dc8",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "f481cf3c-c2e3-45ad-862a-9a16c84796ff",
+                            Id = "7b9cbaea-1d4e-40a1-9da7-b21dba4b425a",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });

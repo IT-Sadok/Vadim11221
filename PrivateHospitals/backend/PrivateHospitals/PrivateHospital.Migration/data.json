@@ -1,24 +1,88 @@
 ﻿{
   "Doctors": [
-    { "ExternalId": "doc-1", "FirstName": "John", "LastName": "Doe", "UserName": "johndoe", "Speciality": 0 },
-    { "ExternalId": "doc-2", "FirstName": "Jane", "LastName": "Smith", "UserName": "janesmith", "Speciality": 0 }
+    {
+      "ExternalId": "ext-doc-1",
+      "CompanyId": "comp-1",
+      "DoctorId": "doc-1",
+      "FirstName": "John",
+      "LastName": "Doe",
+      "UserName": "johndoe",
+      "Speciality": 0
+    },
+    {
+      "ExternalId": "ext-doc-2",
+      "CompanyId": "comp-2",
+      "DoctorId": "doc-2",
+      "FirstName": "Dam",
+      "LastName": "Pae",
+      "UserName": "pamPae",
+      "Speciality": 0
+    }
   ],
   "Patients": [
-    { "ExternalId": "pat-1", "FirstName": "Alice", "LastName": "Brown", "UserName": "alicebrown" },
-    { "ExternalId": "pat-2", "FirstName": "Bob", "LastName": "Johnson", "UserName": "bobjohnson" }
+    {
+      "ExternalId": "ext-pat-3",
+      "CompanyId": "comp-3",
+      "PatientId": "pat-1",
+      "FirstName": "Alice",
+      "LastName": "Brown",
+      "UserName": "alicebrown"
+    },
+    {
+      "ExternalId": "ext-pat-4",
+      "CompanyId": "comp-4",
+      "PatientId": "pat-2",
+      "FirstName": "Olena",
+      "LastName": "Ketch",
+      "UserName": "OlKet"
+    }
   ],
   "Appointments": [
     {
-      "ExternalId": "app-1",
-      "DoctorExternalId": "doc-1",
-      "PatientExternalId": "pat-1",
+      "ExternalId": "ext-app-5",
+      "AppointmentId": 1,
+      "CompanyId": "comp-5",
+      "Doctor": {
+        "ExternalId": "ext-doc-1222",
+        "CompanyId": "comp-1333",
+        "DoctorId": "doc-1",
+        "FirstName": "John",
+        "LastName": "Doe",
+        "UserName": "johndoe",
+        "Speciality": 0
+      },
+      "Patient": {
+        "ExternalId": "ext-pat-32323",
+        "CompanyId": "comp-31212",
+        "PatientId": "pat-1",
+        "FirstName": "Alice",
+        "LastName": "Brown",
+        "UserName": "alicebrown"
+      },
       "Date": "2024-11-27T10:00:00"
     },
     {
-      "ExternalId": "app-2",
-      "DoctorExternalId": "doc-2",
-      "PatientExternalId": "pat-2",
-      "Date": "2024-11-28T14:30:00"
+      "ExternalId": "ext-app-10",
+      "AppointmentId": 2,
+      "CompanyId": "comp-11",
+      "Doctor": {
+        "ExternalId": "ext-doc-2456",
+        "CompanyId": "comp-22346",
+        "DoctorId": "doc-2",
+        "FirstName": "Dam",
+        "LastName": "Pae",
+        "UserName": "pamPae",
+        "Speciality": 0
+      },
+      "Patient": {
+        "ExternalId": "ext-pat-4676",
+        "CompanyId": "comp-445",
+        "PatientId": "pat-2",
+        "FirstName": "Olena",
+        "LastName": "Ketch",
+        "UserName": "OlKet"
+      },
+      "Date": "2024-11-28T10:00:00"
     }
   ]
 }

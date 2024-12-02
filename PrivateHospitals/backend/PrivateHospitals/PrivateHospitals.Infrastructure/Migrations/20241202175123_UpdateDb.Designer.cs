@@ -12,8 +12,8 @@ using PrivateHospitals.Infrastructure.Data;
 namespace PrivateHospitals.Infrastructure.Migrations
 {
     [DbContext(typeof(HospitalDbContext))]
-    [Migration("20241126074602_MigrationData")]
-    partial class MigrationData
+    [Migration("20241202175123_UpdateDb")]
+    partial class UpdateDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,13 +53,13 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4aad1793-8f70-4afd-9520-766004080070",
+                            Id = "9908d014-c99a-4947-8bd3-beae1a4d0c61",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "ae0edfac-05bd-4547-8d1f-f486be7ae4b7",
+                            Id = "421b70f6-d49a-4244-947c-58433e1d3fe8",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });
@@ -182,11 +182,16 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.Property<DateTime>("AppointmentDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CompanyId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DoctorId")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("ExternalId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PatientId")
@@ -201,6 +206,9 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.HasIndex("DoctorId");
 
                     b.HasIndex("PatientId");
+
+                    b.HasIndex("CompanyId", "ExternalId")
+                        .IsUnique();
 
                     b.ToTable("Appointments");
                 });
@@ -240,6 +248,10 @@ namespace PrivateHospitals.Infrastructure.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
+
+                    b.Property<string>("CompanyId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -309,6 +321,9 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("CompanyId", "ExternalId")
+                        .IsUnique();
 
                     b.ToTable("AspNetUsers", (string)null);
 

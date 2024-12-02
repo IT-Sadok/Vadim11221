@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace PrivateHospitals.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationData : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -55,7 +55,8 @@ namespace PrivateHospitals.Infrastructure.Migrations
                 {
                     AppointmentId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ExternalId = table.Column<string>(type: "text", nullable: true),
+                    ExternalId = table.Column<string>(type: "text", nullable: false),
+                    CompanyId = table.Column<string>(type: "text", nullable: false),
                     AppointmentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     DoctorId = table.Column<string>(type: "text", nullable: false),
@@ -119,6 +120,7 @@ namespace PrivateHospitals.Infrastructure.Migrations
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     ExternalId = table.Column<string>(type: "text", nullable: true),
+                    CompanyId = table.Column<string>(type: "text", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
                     Role = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
@@ -197,9 +199,15 @@ namespace PrivateHospitals.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "4aad1793-8f70-4afd-9520-766004080070", null, "Doctor", "DOCTOR" },
-                    { "ae0edfac-05bd-4547-8d1f-f486be7ae4b7", null, "Patient", "PATIENT" }
+                    { "7b9cbaea-1d4e-40a1-9da7-b21dba4b425a", null, "Patient", "PATIENT" },
+                    { "c921064e-1f6d-4f5e-ab3f-5f4237a97dc8", null, "Doctor", "DOCTOR" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_CompanyId_ExternalId",
+                table: "Appointments",
+                columns: new[] { "CompanyId", "ExternalId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_DoctorId",
@@ -241,6 +249,12 @@ namespace PrivateHospitals.Infrastructure.Migrations
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_CompanyId_ExternalId",
+                table: "AspNetUsers",
+                columns: new[] { "CompanyId", "ExternalId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_MedicalCardId",

@@ -1,97 +1,81 @@
 ﻿
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using PrivateHospital.Migration;
 using PrivateHospital.Migration.Dto.Repositories;
 using PrivateHospitals.Infrastructure.Data;
+using System.Security.Cryptography.Xml;
 using System.Text.Json;
 
 class Program
 {
     static async Task Main()
     {
-        Console.WriteLine("Enter the name of the JSON file (with extension, e.g., data.json):");
-        string? filePath= Console.ReadLine();
+        var serviceProvider = ConfigureServices();
 
-        if(!File.Exists(filePath))
-        {
-            Console.WriteLine("File not found");
-            return;
-        }
+        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+
+        logger.LogInformation("Starting the migration process...");
 
         try
         {
-            string configFile = "consolesettings.json";
-            if (!File.Exists(configFile))
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            var context = serviceProvider.GetRequiredService<HospitalDbContext>();
+
+            logger.LogInformation("Testing database connection...");
+
+            if(await context.Database.CanConnectAsync())
             {
-                throw new FileNotFoundException($"File {configFile} not found");
-            }
-
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(configFile, optional: false, reloadOnChange: true)
-                .Build();
-
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new InvalidOperationException("Connection string not found");
-            }
-
-            Console.WriteLine("Configuration loaded successfully");
-
-            var options = new DbContextOptionsBuilder<HospitalDbContext>()
-                .UseNpgsql(connectionString)
-                .Options;
-
-            using var context = new HospitalDbContext(options);
-
-            Console.WriteLine("Testing database connectionString...");
-            if (await context.Database.CanConnectAsync())
-            {
-                Console.WriteLine("Successfully connected to the database");
+                logger.LogInformation("Successfully conected to the database");
             }
             else
             {
-                throw new Exception("Cannot connect to the database");
+                logger.LogWarning("Cannot connect to the database");
+                return;
             }
 
-            var doctorRepository = new DoctorRepository(context);
-            var patientRepository = new PatientRepository(context);
-            var appointmentRepository = new AppointmentsRepository(context);
+            var doctorRepository = serviceProvider.GetRequiredService<DoctorRepository>();
+            var patientRepository = serviceProvider.GetRequiredService<PatientRepository>();
+            var appointmentRepository = serviceProvider.GetRequiredService<AppointmentsRepository>();
 
             var unitOfWork = new UnitOfWork(context, doctorRepository, patientRepository, appointmentRepository);
 
-            Console.WriteLine("Reading JSON file...");
+            Console.WriteLine("Write a JSON file:");
+            var filePath = Console.ReadLine();
+
+            logger.LogInformation("Reading JSON file...");
+
             var migrationData = await ReadJsonAsync(filePath);
 
-            using var transaction = await unitOfWork.BeginTransactionAsync();
-            try
-            {
-                foreach(var doctor in migrationData.Doctors)
+                using var transaction = await unitOfWork.BeginTransactionAsync();
+                try
                 {
-                    await unitOfWork.DoctorService.SaveDoctor(doctor);
-                }
+                    foreach(var doctor in migrationData.Doctors)
+                    {
+                        await unitOfWork.DoctorService.SaveDoctor(doctor);
+                    }
 
-                foreach(var patient in migrationData.Patients)
-                {
-                    await unitOfWork.PatientService.SavePatientAsync(patient);
-                }
+                    foreach(var patient in migrationData.Patients)
+                    {
+                        await unitOfWork.PatientService.SavePatientAsync(patient);
+                    }
 
-                foreach (var appointment in migrationData.Appointments)
-                {
-                    await unitOfWork.AppointmentService.SaveAppointmentAsync(appointment);
-                }
+                    foreach (var appointment in migrationData.Appointments)
+                    {
+                        await unitOfWork.AppointmentService.SaveAppointmentAsync(appointment);
+                    }
 
-                await unitOfWork.SaveChangeAsync();
-                await transaction.CommitAsync();
+                    await transaction.CommitAsync();
 
-                Console.WriteLine("Migration completed successfully.");
+                    logger.LogInformation("Migration completed successfully.");
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                Console.WriteLine($"Migration failed: {ex.Message}");
+                logger.LogInformation($"Migration failed: {ex.Message}");
             }
 
         }
@@ -112,5 +96,31 @@ class Program
 
         return await JsonSerializer.DeserializeAsync<MigrationData>(stream, options) 
             ?? throw new InvalidOperationException("Invalid JSON format.");
+    }
+
+    private static ServiceProvider ConfigureServices()
+    {
+        var services = new ServiceCollection();
+
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("consolesettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+        services.AddSingleton<IConfiguration>(configuration);
+
+        services.AddDbContext<HospitalDbContext>(options =>
+        {
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            options.UseNpgsql(connectionString);
+        });
+
+        services.AddScoped<DoctorRepository>();
+        services.AddScoped<PatientRepository>();
+        services.AddScoped<AppointmentsRepository>();
+
+        services.AddLogging(configure => configure.AddConsole());
+
+        return services.BuildServiceProvider();
     }
 }

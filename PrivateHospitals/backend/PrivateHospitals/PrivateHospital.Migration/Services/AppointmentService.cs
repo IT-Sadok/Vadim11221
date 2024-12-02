@@ -1,6 +1,7 @@
 ﻿using PrivateHospital.Migration.Dto;
 using PrivateHospital.Migration.Dto.Interfaces;
 using PrivateHospital.Migration.Dto.Repositories;
+using PrivateHospital.Migration.Interfaces;
 using PrivateHospitals.Core.Enum;
 using PrivateHospitals.Core.Models;
 using PrivateHospitals.Core.Models.Users;
@@ -13,31 +14,35 @@ using System.Threading.Tasks;
 namespace PrivateHospital.Migration.Services
 {
     public class AppointmentService(
-            IRepository<Appointment> _appointmentRepository,
-            IRepository<Doctor> _doctorRepository,
-            IRepository<Patient> _patientRepository
+            DoctorRepository _doctorRepository,
+            PatientRepository _patientRepository,
+            AppointmentsRepository _appointmentRepository
         )
     {
         public async Task SaveAppointmentAsync(AppointmentDto appointmentDto)
         {
-            if(appointmentDto != null)
-            {
-                var doctor = await _doctorRepository.GetByExternalId(appointmentDto.DoctorExternalId);
-                var patient = await _patientRepository.GetByExternalId(appointmentDto.PatientExternalId);
+            var appointment = await _appointmentRepository.GetByExternalId(appointmentDto.ExternalId);
 
-                if(doctor != null && patient != null)
-                {
-                    var appointment = new Appointment
+            if(appointment == null)
+            {
+                     appointment = new Appointment
                     {
+                        AppointmentId = appointmentDto.AppointmentId,
+                        CompanyId = appointmentDto.CompanyId,
                         ExternalId = appointmentDto.ExternalId,
-                        DoctorId = doctor.Id,
-                        PatientId = patient.Id,
+                        DoctorId = appointmentDto.Doctor.Id,
+                        Doctor = appointmentDto.Doctor,
+                        PatientId = appointmentDto.Patient.Id,
+                        Patient = appointmentDto.Patient,
                         AppointmentDate = appointmentDto.Date.ToUniversalTime(),
                         Status = AppointmentStatuses.Scheduled
                     };
 
                     await _appointmentRepository.AddAsync(appointment);
-                }
+            }
+            else
+            {
+                Console.WriteLine("Appointment already exists: ExternalId = {ExternalId}", appointmentDto.ExternalId);
             }
         }
     }

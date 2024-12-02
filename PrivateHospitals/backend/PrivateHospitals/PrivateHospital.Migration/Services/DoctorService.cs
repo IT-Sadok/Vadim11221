@@ -1,6 +1,7 @@
 ﻿using PrivateHospital.Migration.Dto;
 using PrivateHospital.Migration.Dto.Interfaces;
 using PrivateHospital.Migration.Dto.Repositories;
+using PrivateHospital.Migration.Interfaces;
 using PrivateHospitals.Core.Models.Users;
 using PrivateHospitals.Infrastructure.Interfaces.Doctor;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace PrivateHospital.Migration.Services
 {
-    public class DoctorService(IRepository<Doctor> _doctorRepository)
+    public class DoctorService(DoctorRepository _doctorRepository)
     {
         public async Task SaveDoctor(DoctorDto doctorDto)
         {
@@ -23,6 +24,8 @@ namespace PrivateHospital.Migration.Services
                 {
                     doctor = new Doctor
                     {
+                        Id = doctorDto.DoctorId,
+                        CompanyId = doctorDto.CompanyId, 
                         ExternalId = doctorDto.ExternalId,
                         UserName = doctorDto.UserName,
                         FirstName = doctorDto.FirstName,
