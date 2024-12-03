@@ -14,14 +14,13 @@ using System.Threading.Tasks;
 namespace PrivateHospital.Migration.Services
 {
     public class AppointmentService(
-            DoctorRepository _doctorRepository,
-            PatientRepository _patientRepository,
-            AppointmentsRepository _appointmentRepository
+            IRepository<Appointment> _appointmentRepository,
+            IExternalIdRepository<Appointment> _appointmentExternalId
         )
     {
         public async Task SaveAppointmentAsync(AppointmentDto appointmentDto)
         {
-            var appointment = await _appointmentRepository.GetByExternalId(appointmentDto.ExternalId);
+            var appointment = await _appointmentExternalId.GetByExternalId(appointmentDto.ExternalId);
 
             if(appointment == null)
             {

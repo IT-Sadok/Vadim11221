@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PrivateHospital.Migration.Interfaces
 {
-    public interface IIdRepository<T> where T : class
+    public interface IExternalIdRepository<T> where T : class
     {
         Task<T> GetByExternalId(string externalId);
     }

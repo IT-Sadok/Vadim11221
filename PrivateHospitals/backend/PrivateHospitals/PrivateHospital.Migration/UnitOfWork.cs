@@ -21,12 +21,12 @@ namespace PrivateHospital.Migration
         private readonly HospitalDbContext _context;
         private IDbContextTransaction _currentTransaction;
 
-        public UnitOfWork(HospitalDbContext context, DoctorRepository _doctorRepository, PatientRepository _patientRepository, AppointmentsRepository _appointmentRepository)
+        public UnitOfWork(HospitalDbContext context, IRepository<Doctor> _doctorRepository, IExternalIdRepository<Doctor> _doctorExternalIdRepository, IRepository<Patient> _patientRepository, IExternalIdRepository<Patient> _patientExternalIdRepository , IRepository<Appointment> _appointmentRepository, IExternalIdRepository<Appointment> _appointmentExternalIdRepository)
         {
             _context = context;
-            DoctorService = new DoctorService(_doctorRepository);
-            PatientService = new PatientService(_patientRepository);
-            AppointmentService = new AppointmentService(_doctorRepository, _patientRepository, _appointmentRepository);
+            DoctorService = new DoctorService(_doctorRepository, _doctorExternalIdRepository);
+            PatientService = new PatientService(_patientRepository, _patientExternalIdRepository);
+            AppointmentService = new AppointmentService(_appointmentRepository, _appointmentExternalIdRepository);
         }
 
         public DoctorService DoctorService { get; }

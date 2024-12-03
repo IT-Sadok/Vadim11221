@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace PrivateHospital.Migration.Services
 {
-    public class DoctorService(DoctorRepository _doctorRepository)
+    public class DoctorService(IRepository<Doctor> _doctorRepository, IExternalIdRepository<Doctor> _doctorExternalIdRepository)
     {
         public async Task SaveDoctor(DoctorDto doctorDto)
         {
             if(doctorDto != null)
             {
-                var doctor = await _doctorRepository.GetByExternalId(doctorDto.ExternalId);
+                var doctor = await _doctorExternalIdRepository.GetByExternalId(doctorDto.ExternalId);
 
                 if (doctor == null)
                 {

@@ -5,7 +5,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PrivateHospital.Migration;
+using PrivateHospital.Migration.Dto.Interfaces;
 using PrivateHospital.Migration.Dto.Repositories;
+using PrivateHospital.Migration.Interfaces;
+using PrivateHospitals.Core.Models;
+using PrivateHospitals.Core.Models.Users;
 using PrivateHospitals.Infrastructure.Data;
 using System.Security.Cryptography.Xml;
 using System.Text.Json;
@@ -37,11 +41,14 @@ class Program
                 return;
             }
 
-            var doctorRepository = serviceProvider.GetRequiredService<DoctorRepository>();
-            var patientRepository = serviceProvider.GetRequiredService<PatientRepository>();
-            var appointmentRepository = serviceProvider.GetRequiredService<AppointmentsRepository>();
+            var doctorRepository = serviceProvider.GetRequiredService<IRepository<Doctor>>();
+            var patientRepository = serviceProvider.GetRequiredService<IRepository<Patient>>();
+            var appointmentRepository = serviceProvider.GetRequiredService<IRepository<Appointment>>();
+            var appointmentExternalIdRepository = serviceProvider.GetRequiredService<IExternalIdRepository<Appointment>>();
+            var doctorExternalIdRepository = serviceProvider.GetRequiredService<IExternalIdRepository<Doctor>>();
+            var patientExternalIdRepository = serviceProvider.GetRequiredService<IExternalIdRepository<Patient>>();
 
-            var unitOfWork = new UnitOfWork(context, doctorRepository, patientRepository, appointmentRepository);
+            var unitOfWork = new UnitOfWork(context, doctorRepository,doctorExternalIdRepository, patientRepository, patientExternalIdRepository, appointmentRepository, appointmentExternalIdRepository);
 
             Console.WriteLine("Write a JSON file:");
             var filePath = Console.ReadLine();
@@ -115,9 +122,12 @@ class Program
             options.UseNpgsql(connectionString);
         });
 
-        services.AddScoped<DoctorRepository>();
-        services.AddScoped<PatientRepository>();
-        services.AddScoped<AppointmentsRepository>();
+        services.AddScoped<IRepository<Doctor>, DoctorRepository>();
+        services.AddScoped<IRepository<Patient>, PatientRepository>();
+        services.AddScoped<IRepository<Appointment>, AppointmentsRepository>();
+        services.AddScoped<IExternalIdRepository<Appointment>, AppointmentsRepository>();
+        services.AddScoped<IExternalIdRepository<Patient>, PatientRepository>();
+        services.AddScoped<IExternalIdRepository<Doctor>, DoctorRepository>();
 
         services.AddLogging(configure => configure.AddConsole());
 

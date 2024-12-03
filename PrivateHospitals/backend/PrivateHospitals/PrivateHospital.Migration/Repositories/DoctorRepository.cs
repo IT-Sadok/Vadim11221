@@ -7,7 +7,7 @@ using PrivateHospitals.Infrastructure.Data;
 
 namespace PrivateHospital.Migration.Dto.Repositories;
 
-public class DoctorRepository(HospitalDbContext _context): IRepository<Doctor>, IIdRepository<Doctor>
+public class DoctorRepository(HospitalDbContext _context): IRepository<Doctor>, IExternalIdRepository<Doctor>
 {
 
     public async Task AddAsync(Doctor entity)

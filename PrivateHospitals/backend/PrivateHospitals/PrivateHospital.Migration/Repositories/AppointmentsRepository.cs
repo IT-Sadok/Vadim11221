@@ -6,7 +6,7 @@ using PrivateHospitals.Infrastructure.Data;
 
 namespace PrivateHospital.Migration.Dto.Repositories;
 
-public class AppointmentsRepository(HospitalDbContext _context): IRepository<Appointment>, IIdRepository<Appointment>
+public class AppointmentsRepository(HospitalDbContext _context): IRepository<Appointment>, IExternalIdRepository<Appointment>
 {
     public async Task<Appointment> GetByExternalId(string externalId)
     {
