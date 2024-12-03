@@ -7,7 +7,7 @@
 namespace PrivateHospitals.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Changes : Migration
+    public partial class NewUpdateDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,20 +15,20 @@ namespace PrivateHospitals.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "0f0d6f14-7e55-431e-a87a-d39f923f441d");
+                keyValue: "421b70f6-d49a-4244-947c-58433e1d3fe8");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "c80f6a9f-054e-479e-9162-e97a76bac751");
+                keyValue: "9908d014-c99a-4947-8bd3-beae1a4d0c61");
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0d320224-f8d5-4cd4-9292-6e7dceaa516a", null, "Doctor", "DOCTOR" },
-                    { "0f1f27fc-ca43-4e5c-acc4-4e23250e8166", null, "Patient", "PATIENT" }
+                    { "2794bf9a-fa79-4b07-abb8-6664942c57a0", null, "Doctor", "DOCTOR" },
+                    { "f481cf3c-c2e3-45ad-862a-9a16c84796ff", null, "Patient", "PATIENT" }
                 });
         }
 
@@ -38,20 +38,20 @@ namespace PrivateHospitals.Infrastructure.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "0d320224-f8d5-4cd4-9292-6e7dceaa516a");
+                keyValue: "2794bf9a-fa79-4b07-abb8-6664942c57a0");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "0f1f27fc-ca43-4e5c-acc4-4e23250e8166");
+                keyValue: "f481cf3c-c2e3-45ad-862a-9a16c84796ff");
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0f0d6f14-7e55-431e-a87a-d39f923f441d", null, "Patient", "PATIENT" },
-                    { "c80f6a9f-054e-479e-9162-e97a76bac751", null, "Doctor", "DOCTOR" }
+                    { "421b70f6-d49a-4244-947c-58433e1d3fe8", null, "Patient", "PATIENT" },
+                    { "9908d014-c99a-4947-8bd3-beae1a4d0c61", null, "Doctor", "DOCTOR" }
                 });
         }
     }

@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateHospitals.Applicatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateHospitals.Tests", "PrivateHospitals.Tests\PrivateHospitals.Tests.csproj", "{A4DA1522-476B-458B-99D6-69823BD7B89F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateHospital.Migration", "PrivateHospital.Migration\PrivateHospital.Migration.csproj", "{EB053D2D-E24D-4FA9-9CEE-B732014E6737}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{A4DA1522-476B-458B-99D6-69823BD7B89F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4DA1522-476B-458B-99D6-69823BD7B89F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4DA1522-476B-458B-99D6-69823BD7B89F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB053D2D-E24D-4FA9-9CEE-B732014E6737}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB053D2D-E24D-4FA9-9CEE-B732014E6737}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB053D2D-E24D-4FA9-9CEE-B732014E6737}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB053D2D-E24D-4FA9-9CEE-B732014E6737}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

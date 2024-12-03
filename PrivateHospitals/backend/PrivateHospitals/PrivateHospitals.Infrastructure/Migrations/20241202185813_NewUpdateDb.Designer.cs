@@ -12,8 +12,8 @@ using PrivateHospitals.Infrastructure.Data;
 namespace PrivateHospitals.Infrastructure.Migrations
 {
     [DbContext(typeof(HospitalDbContext))]
-    [Migration("20241118160915_Changes")]
-    partial class Changes
+    [Migration("20241202185813_NewUpdateDb")]
+    partial class NewUpdateDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,13 +53,13 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0d320224-f8d5-4cd4-9292-6e7dceaa516a",
+                            Id = "2794bf9a-fa79-4b07-abb8-6664942c57a0",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "0f1f27fc-ca43-4e5c-acc4-4e23250e8166",
+                            Id = "f481cf3c-c2e3-45ad-862a-9a16c84796ff",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });
@@ -182,7 +182,15 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.Property<DateTime>("AppointmentDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CompanyId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DoctorId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExternalId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -198,6 +206,9 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.HasIndex("DoctorId");
 
                     b.HasIndex("PatientId");
+
+                    b.HasIndex("CompanyId", "ExternalId")
+                        .IsUnique();
 
                     b.ToTable("Appointments");
                 });
@@ -238,6 +249,10 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<string>("CompanyId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
@@ -248,6 +263,9 @@ namespace PrivateHospitals.Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("ExternalId")
+                        .HasColumnType("text");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -304,6 +322,9 @@ namespace PrivateHospitals.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
+                    b.HasIndex("CompanyId", "ExternalId")
+                        .IsUnique();
+
                     b.ToTable("AspNetUsers", (string)null);
 
                     b.HasDiscriminator<string>("Role").HasValue("AppUser");
@@ -318,9 +339,8 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.Property<int>("DoctorSpeciality")
                         .HasColumnType("integer");
 
-                    b.Property<string>("WorkingHoursJson")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<string>("WorkingHours")
+                        .HasColumnType("jsonb");
 
                     b.HasDiscriminator().HasValue("Doctor");
                 });
@@ -391,13 +411,13 @@ namespace PrivateHospitals.Infrastructure.Migrations
             modelBuilder.Entity("PrivateHospitals.Core.Models.Appointment", b =>
                 {
                     b.HasOne("PrivateHospitals.Core.Models.Users.Doctor", "Doctor")
-                        .WithMany("Appointmants")
+                        .WithMany("Appointments")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PrivateHospitals.Core.Models.Users.Patient", "Patient")
-                        .WithMany("Appointmants")
+                        .WithMany("Appointments")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -437,14 +457,14 @@ namespace PrivateHospitals.Infrastructure.Migrations
 
             modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Doctor", b =>
                 {
-                    b.Navigation("Appointmants");
+                    b.Navigation("Appointments");
 
                     b.Navigation("PatientsMedicalCards");
                 });
 
             modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Patient", b =>
                 {
-                    b.Navigation("Appointmants");
+                    b.Navigation("Appointments");
                 });
 #pragma warning restore 612, 618
         }

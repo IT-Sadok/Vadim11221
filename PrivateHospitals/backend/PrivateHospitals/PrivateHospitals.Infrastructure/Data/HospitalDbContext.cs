@@ -55,6 +55,14 @@ public class HospitalDbContext: IdentityDbContext<AppUser>
             } 
         };
         builder.Entity<IdentityRole>().HasData(roles);
+
+        builder.Entity<Appointment>()
+            .HasIndex(x => new { x.CompanyId, x.ExternalId })
+            .IsUnique();
+
+        builder.Entity<AppUser>()
+            .HasIndex(x => new { x.CompanyId, x.ExternalId })
+            .IsUnique();
     }
     
 }
