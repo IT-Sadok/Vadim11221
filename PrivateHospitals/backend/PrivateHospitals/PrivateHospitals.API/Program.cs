@@ -4,14 +4,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 using PrivateHospitals.API.Middleware;
 using PrivateHospitals.Application.Interfaces.Appointment;
 using PrivateHospitals.Application.Interfaces.Doctor;
+using PrivateHospitals.Application.Interfaces.DoctorInfo;
+using PrivateHospitals.Application.Interfaces.Statistics;
 using PrivateHospitals.Application.Interfaces.Token;
 using PrivateHospitals.Application.Interfaces.User;
 using PrivateHospitals.Application.Profiles;
 using PrivateHospitals.Application.Services.Appointment;
 using PrivateHospitals.Application.Services.Doctor;
+using PrivateHospitals.Application.Services.DoctorInfo;
+using PrivateHospitals.Application.Services.Statistics;
 using PrivateHospitals.Application.Services.Token;
 using PrivateHospitals.Application.Services.User;
 using PrivateHospitals.Application.Validators.User;
@@ -20,12 +25,18 @@ using PrivateHospitals.Core.Models.Users;
 using PrivateHospitals.Infrastructure.Data;
 using PrivateHospitals.Infrastructure.Interfaces.Appointment;
 using PrivateHospitals.Infrastructure.Interfaces.Doctor;
+using PrivateHospitals.Infrastructure.Interfaces.DoctorInfo;
 using PrivateHospitals.Infrastructure.Interfaces.Patient;
+using PrivateHospitals.Infrastructure.Interfaces.Statistics;
 using PrivateHospitals.Infrastructure.Interfaces.User;
+using PrivateHospitals.Infrastructure.Loader;
 using PrivateHospitals.Infrastructure.Repositories.Appointment;
 using PrivateHospitals.Infrastructure.Repositories.Doctor;
+using PrivateHospitals.Infrastructure.Repositories.DoctorInfo;
 using PrivateHospitals.Infrastructure.Repositories.Patient;
+using PrivateHospitals.Infrastructure.Repositories.Statistics;
 using PrivateHospitals.Infrastructure.Repositories.User;
+using System.Data;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -118,6 +129,16 @@ builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<IStatisticsRepository, StatisticsRepository>();
+builder.Services.AddScoped<IStatisticsService, StatisticsService>();
+builder.Services.AddScoped<IDoctorInfoRepository, DoctorInfoRepository>();
+builder.Services.AddScoped<IDoctorInfoService, DoctorInfoService>();
+builder.Services.AddScoped<SqlQueryLoader>();
+builder.Services.AddScoped<IDbConnection>(x =>
+{
+    var connectionString = x.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection");
+    return new NpgsqlConnection(connectionString);
+});
 
 
 

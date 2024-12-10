@@ -50,13 +50,13 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2794bf9a-fa79-4b07-abb8-6664942c57a0",
+                            Id = "bbaa123a-a209-4065-a79f-b484e63d7421",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "f481cf3c-c2e3-45ad-862a-9a16c84796ff",
+                            Id = "0874b770-8bd5-459b-869b-2d6a68d3ce22",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         });
@@ -187,6 +187,9 @@ namespace PrivateHospitals.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("DoctorInfoId")
+                        .HasColumnType("text");
+
                     b.Property<string>("ExternalId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -201,6 +204,8 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.HasKey("AppointmentId");
 
                     b.HasIndex("DoctorId");
+
+                    b.HasIndex("DoctorInfoId");
 
                     b.HasIndex("PatientId");
 
@@ -222,6 +227,9 @@ namespace PrivateHospitals.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("DoctorInfoId")
+                        .HasColumnType("text");
+
                     b.Property<string>("PatientId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -232,6 +240,8 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.HasKey("MedicalCardId");
 
                     b.HasIndex("DoctorId");
+
+                    b.HasIndex("DoctorInfoId");
 
                     b.HasIndex("PatientId");
 
@@ -329,6 +339,70 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("PrivateHospitals.Core.Models.Users.DoctorInfo", b =>
+                {
+                    b.Property<string>("DoctorInfoId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DiplomNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("DoctorSpeciality")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("INN")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("University")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double?>("YearsOfExperience")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("DoctorInfoId");
+
+                    b.ToTable("DoctorInfos");
+                });
+
+            modelBuilder.Entity("PrivateHospitals.Core.Models.WorkingHours", b =>
+                {
+                    b.Property<string>("WorkingHoursId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Day")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("DoctorInfoId")
+                        .HasColumnType("text");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("interval");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("interval");
+
+                    b.HasKey("WorkingHoursId");
+
+                    b.HasIndex("DoctorInfoId");
+
+                    b.ToTable("WorkingHours");
+                });
+
             modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Doctor", b =>
                 {
                     b.HasBaseType("PrivateHospitals.Core.Models.Users.AppUser");
@@ -338,6 +412,9 @@ namespace PrivateHospitals.Infrastructure.Migrations
 
                     b.Property<string>("WorkingHours")
                         .HasColumnType("jsonb");
+
+                    b.Property<double>("YearsOfExperience")
+                        .HasColumnType("double precision");
 
                     b.HasDiscriminator().HasValue("Doctor");
                 });
@@ -413,6 +490,10 @@ namespace PrivateHospitals.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PrivateHospitals.Core.Models.Users.DoctorInfo", null)
+                        .WithMany("Appointments")
+                        .HasForeignKey("DoctorInfoId");
+
                     b.HasOne("PrivateHospitals.Core.Models.Users.Patient", "Patient")
                         .WithMany("Appointments")
                         .HasForeignKey("PatientId")
@@ -432,6 +513,10 @@ namespace PrivateHospitals.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PrivateHospitals.Core.Models.Users.DoctorInfo", null)
+                        .WithMany("PatientsMedicalCards")
+                        .HasForeignKey("DoctorInfoId");
+
                     b.HasOne("PrivateHospitals.Core.Models.Users.Patient", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientId")
@@ -443,6 +528,13 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("PrivateHospitals.Core.Models.WorkingHours", b =>
+                {
+                    b.HasOne("PrivateHospitals.Core.Models.Users.DoctorInfo", null)
+                        .WithMany("WorkingHours")
+                        .HasForeignKey("DoctorInfoId");
+                });
+
             modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Patient", b =>
                 {
                     b.HasOne("PrivateHospitals.Core.Models.MedicalCard", "MedicalCard")
@@ -450,6 +542,15 @@ namespace PrivateHospitals.Infrastructure.Migrations
                         .HasForeignKey("MedicalCardId");
 
                     b.Navigation("MedicalCard");
+                });
+
+            modelBuilder.Entity("PrivateHospitals.Core.Models.Users.DoctorInfo", b =>
+                {
+                    b.Navigation("Appointments");
+
+                    b.Navigation("PatientsMedicalCards");
+
+                    b.Navigation("WorkingHours");
                 });
 
             modelBuilder.Entity("PrivateHospitals.Core.Models.Users.Doctor", b =>
