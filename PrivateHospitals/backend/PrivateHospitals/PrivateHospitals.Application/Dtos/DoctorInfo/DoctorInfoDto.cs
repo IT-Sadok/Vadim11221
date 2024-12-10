@@ -13,7 +13,7 @@ namespace PrivateHospitals.Application.Dtos.DoctorInfo
         public string LastName { get; init; }
         public string Email { get; init; }
         public string INN { get; init; }
-        public string DiplomNumber { get; init; }
         public string University { get; init; }
+        public string DiplomNumber { get; init; }
     }
 }
