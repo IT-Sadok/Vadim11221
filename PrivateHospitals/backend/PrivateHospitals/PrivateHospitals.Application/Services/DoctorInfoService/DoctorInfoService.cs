@@ -1,21 +1,25 @@
-﻿using PrivateHospitals.Application.Dtos.DoctorInfo;
+﻿using AutoMapper;
+using PrivateHospitals.Application.Dtos.DoctorInfo;
 using PrivateHospitals.Application.Interfaces.DoctorInfo;
-using PrivateHospitals.Infrastructure.Interfaces.DoctorInfo;
+using PrivateHospitals.Core.Models.Users;
+using PrivateHospitals.Infrastructure.Interfaces.DoctorInfoInterface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PrivateHospitals.Application.Services.DoctorInfo
+namespace PrivateHospitals.Application.Services.DoctorInfoService
 {
     public class DoctorInfoService : IDoctorInfoService
     {
         private readonly IDoctorInfoRepository _doctorInfoRepository;
+        private readonly IMapper _mapper;
 
-        public DoctorInfoService(IDoctorInfoRepository doctorInfoRepository)
+        public DoctorInfoService(IDoctorInfoRepository doctorInfoRepository, IMapper mapper)
         {
             _doctorInfoRepository = doctorInfoRepository;
+            _mapper = mapper;
         }
 
         public async Task<bool> UpsertDoctorInfoAsync(DoctorInfoDto doctorInfo)
@@ -25,13 +29,9 @@ namespace PrivateHospitals.Application.Services.DoctorInfo
                 return false;
             }
 
-            return await _doctorInfoRepository.UpsertDoctorInfo(doctorInfo.DoctorInfoId,
-             doctorInfo.FirstName,
-             doctorInfo.LastName,
-             doctorInfo.Email,
-             doctorInfo.University,
-             doctorInfo.INN,
-             doctorInfo.DiplomNumber);
+            var doctorInfoDto = _mapper.Map<DoctorInfo>(doctorInfo);
+
+            return await _doctorInfoRepository.UpsertDoctorInfo(doctorInfoDto);
         }
     }
 }

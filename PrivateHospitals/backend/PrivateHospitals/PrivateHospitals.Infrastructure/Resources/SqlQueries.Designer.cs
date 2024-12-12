@@ -72,8 +72,7 @@ namespace PrivateHospitals.Infrastructure.Resources {
         ///ON &quot;AspNetUsers&quot;.&quot;Id&quot; = &quot;Appointments&quot;.&quot;DoctorId&quot;
         ///GROUP BY &quot;AspNetUsers&quot;.&quot;Id&quot;, &quot;AspNetUsers&quot;.&quot;FirstName&quot;, &quot;AspNetUsers&quot;.&quot;LastName&quot;, &quot;AspNetUsers&quot;.&quot;DoctorSpeciality&quot;
         ///HAVING COUNT(&quot;Appointments&quot;.&quot;AppointmentId&quot;) &gt;= 1
-        ///ORDER BY AppointmentCount DESC;
-        ///.
+        ///ORDER BY AppointmentCou [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DoctorAppointmentsMoreThanOne {
             get {
@@ -106,13 +105,7 @@ namespace PrivateHospitals.Infrastructure.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to SELECT 
-        ///    CASE 
-        ///        WHEN &quot;DoctorSpeciality&quot; = 0 THEN &apos;Doctor&apos;
-        ///        WHEN &quot;DoctorSpeciality&quot; = 1 THEN &apos;Cardiologist&apos;
-        ///        WHEN &quot;DoctorSpeciality&quot; = 2 THEN &apos;Dermatologist&apos;
-        ///        WHEN &quot;DoctorSpeciality&quot; = 3 THEN &apos;Neurologist&apos;
-        ///        ELSE &apos;Unknown&apos;
-        ///    END AS DoctorSpecialityName,
+        ///    &quot;DoctorSpeciality&quot;,
         ///    COUNT(*) AS DoctorCount
         ///FROM &quot;AspNetUsers&quot;
         ///WHERE &quot;Role&quot; = &apos;Doctor&apos;

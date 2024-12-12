@@ -119,13 +119,7 @@
   </resheader>
   <data name="DoctorCountBySpeciality" xml:space="preserve">
     <value>SELECT 
-    CASE 
-        WHEN "DoctorSpeciality" = 0 THEN 'Doctor'
-        WHEN "DoctorSpeciality" = 1 THEN 'Cardiologist'
-        WHEN "DoctorSpeciality" = 2 THEN 'Dermatologist'
-        WHEN "DoctorSpeciality" = 3 THEN 'Neurologist'
-        ELSE 'Unknown'
-    END AS DoctorSpecialityName,
+    "DoctorSpeciality",
     COUNT(*) AS DoctorCount
 FROM "AspNetUsers"
 WHERE "Role" = 'Doctor'

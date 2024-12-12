@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PrivateHospitals.Application.Dtos.DoctorInfo;
 using PrivateHospitals.Application.Interfaces.DoctorInfo;
-using PrivateHospitals.Application.Services.DoctorInfo;
 using PrivateHospitals.Core.Models.Users;
 
 namespace PrivateHospitals.API.Controllers.DoctorInfoFolder

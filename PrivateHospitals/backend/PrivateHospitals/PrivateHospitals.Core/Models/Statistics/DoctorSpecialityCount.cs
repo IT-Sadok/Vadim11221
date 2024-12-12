@@ -9,7 +9,7 @@ namespace PrivateHospitals.Core.Models.Statistics
 {
     public class DoctorSpecialityCount
     {
-        public string DoctorSpecialityName { get; set; }
+        public int DoctorSpeciality { get; set; }
         public int DoctorCount { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Dapper;
-using PrivateHospitals.Infrastructure.Interfaces.DoctorInfo;
+using PrivateHospitals.Core.Models.Users;
+using PrivateHospitals.Infrastructure.Interfaces.DoctorInfoInterface;
 using PrivateHospitals.Infrastructure.Loader;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PrivateHospitals.Infrastructure.Repositories.DoctorInfo
+namespace PrivateHospitals.Infrastructure.Repositories.DoctorInfoRepository
 {
     public class DoctorInfoRepository : IDoctorInfoRepository
     {
@@ -22,23 +23,23 @@ namespace PrivateHospitals.Infrastructure.Repositories.DoctorInfo
             _queryLoader = queryLoader;
         }
 
-        public async Task<bool> UpsertDoctorInfo(string doctorId, string firstName, string lastName, string email, string university, string INN, string diplomNumber)
+        public async Task<bool> UpsertDoctorInfo(DoctorInfo doctorInfo)
         {
             var doctorExistQuery = _queryLoader.GetQuery("DoctorExists");
-            var existDoctor = await _dbConnection.QueryFirstAsync<bool>(doctorExistQuery, new { doctorId });
+            var existDoctor = await _dbConnection.QueryFirstAsync<bool>(doctorExistQuery, new { doctorInfo.DoctorInfoId });
 
             if (!existDoctor)
             {
                 var insertQuery = _queryLoader.GetQuery("InsertDoctorInfo");
                 await _dbConnection.ExecuteAsync(insertQuery, new
                 {
-                    DoctorId = doctorId,
-                    FirstName = firstName,
-                    LastName = lastName,
-                    Email = email,
-                    Universities = university,
-                    INN = INN,
-                    DiplomNumber = diplomNumber
+                    DoctorId = doctorInfo.DoctorInfoId,
+                    FirstName = doctorInfo.FirstName,
+                    LastName = doctorInfo.LastName,
+                    Email = doctorInfo.Email,
+                    Universities = doctorInfo.University,
+                    INN = doctorInfo.INN,
+                    DiplomNumber = doctorInfo.DiplomNumber
                 });
 
                 return true;
@@ -48,13 +49,13 @@ namespace PrivateHospitals.Infrastructure.Repositories.DoctorInfo
                 var updateQuery = _queryLoader.GetQuery("UpdateDoctorInfo");
                 await _dbConnection.ExecuteAsync(updateQuery, new
                 {
-                    DoctorId = doctorId,
-                    FirstName = firstName,
-                    LastName = lastName,
-                    Email = email,
-                    Universities = university,
-                    INN = INN,
-                    DiplomNumber = diplomNumber
+                    DoctorId = doctorInfo.DoctorInfoId,
+                    FirstName = doctorInfo.FirstName,
+                    LastName = doctorInfo.LastName,
+                    Email = doctorInfo.Email,
+                    Universities = doctorInfo.University,
+                    INN = doctorInfo.INN,
+                    DiplomNumber = doctorInfo.DiplomNumber
                 });
 
                 return true;
