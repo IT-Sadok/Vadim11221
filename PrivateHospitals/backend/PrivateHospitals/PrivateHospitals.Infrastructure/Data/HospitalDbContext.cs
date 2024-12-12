@@ -19,6 +19,7 @@ public class HospitalDbContext: IdentityDbContext<AppUser>
     }
     
     public DbSet<Appointment> Appointments { get; set; }
+    public DbSet<DoctorInfo> DoctorInfos { get; set; }
     
 
     protected override void OnModelCreating(ModelBuilder builder)

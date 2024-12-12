@@ -29,6 +29,25 @@ namespace PrivateHospitals.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DoctorInfos",
+                columns: table => new
+                {
+                    DoctorInfoId = table.Column<string>(type: "text", nullable: false),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    INN = table.Column<string>(type: "text", nullable: false),
+                    DiplomNumber = table.Column<string>(type: "text", nullable: false),
+                    DoctorSpeciality = table.Column<int>(type: "integer", nullable: true),
+                    YearsOfExperience = table.Column<double>(type: "double precision", nullable: true),
+                    University = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DoctorInfos", x => x.DoctorInfoId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -50,6 +69,26 @@ namespace PrivateHospitals.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "WorkingHours",
+                columns: table => new
+                {
+                    WorkingHoursId = table.Column<string>(type: "text", nullable: false),
+                    Day = table.Column<int>(type: "integer", nullable: false),
+                    StartTime = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    EndTime = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    DoctorInfoId = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WorkingHours", x => x.WorkingHoursId);
+                    table.ForeignKey(
+                        name: "FK_WorkingHours_DoctorInfos_DoctorInfoId",
+                        column: x => x.DoctorInfoId,
+                        principalTable: "DoctorInfos",
+                        principalColumn: "DoctorInfoId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Appointments",
                 columns: table => new
                 {
@@ -60,11 +99,17 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     AppointmentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     DoctorId = table.Column<string>(type: "text", nullable: false),
-                    PatientId = table.Column<string>(type: "text", nullable: false)
+                    PatientId = table.Column<string>(type: "text", nullable: false),
+                    DoctorInfoId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Appointments", x => x.AppointmentId);
+                    table.ForeignKey(
+                        name: "FK_Appointments_DoctorInfos_DoctorInfoId",
+                        column: x => x.DoctorInfoId,
+                        principalTable: "DoctorInfos",
+                        principalColumn: "DoctorInfoId");
                 });
 
             migrationBuilder.CreateTable(
@@ -125,6 +170,7 @@ namespace PrivateHospitals.Infrastructure.Migrations
                     LastName = table.Column<string>(type: "text", nullable: false),
                     Role = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
                     DoctorSpeciality = table.Column<int>(type: "integer", nullable: true),
+                    YearsOfExperience = table.Column<double>(type: "double precision", nullable: true),
                     WorkingHours = table.Column<string>(type: "jsonb", nullable: true),
                     MedicalCardId = table.Column<int>(type: "integer", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -175,7 +221,8 @@ namespace PrivateHospitals.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     VisitDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DoctorId = table.Column<string>(type: "text", nullable: false),
-                    PatientId = table.Column<string>(type: "text", nullable: false)
+                    PatientId = table.Column<string>(type: "text", nullable: false),
+                    DoctorInfoId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -192,6 +239,11 @@ namespace PrivateHospitals.Infrastructure.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MedicalCard_DoctorInfos_DoctorInfoId",
+                        column: x => x.DoctorInfoId,
+                        principalTable: "DoctorInfos",
+                        principalColumn: "DoctorInfoId");
                 });
 
             migrationBuilder.InsertData(
@@ -199,8 +251,8 @@ namespace PrivateHospitals.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "7b9cbaea-1d4e-40a1-9da7-b21dba4b425a", null, "Patient", "PATIENT" },
-                    { "c921064e-1f6d-4f5e-ab3f-5f4237a97dc8", null, "Doctor", "DOCTOR" }
+                    { "0874b770-8bd5-459b-869b-2d6a68d3ce22", null, "Patient", "PATIENT" },
+                    { "bbaa123a-a209-4065-a79f-b484e63d7421", null, "Doctor", "DOCTOR" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -213,6 +265,11 @@ namespace PrivateHospitals.Infrastructure.Migrations
                 name: "IX_Appointments_DoctorId",
                 table: "Appointments",
                 column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_DoctorInfoId",
+                table: "Appointments",
+                column: "DoctorInfoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_PatientId",
@@ -273,9 +330,19 @@ namespace PrivateHospitals.Infrastructure.Migrations
                 column: "DoctorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MedicalCard_DoctorInfoId",
+                table: "MedicalCard",
+                column: "DoctorInfoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MedicalCard_PatientId",
                 table: "MedicalCard",
                 column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WorkingHours_DoctorInfoId",
+                table: "WorkingHours",
+                column: "DoctorInfoId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Appointments_AspNetUsers_DoctorId",
@@ -355,6 +422,9 @@ namespace PrivateHospitals.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "WorkingHours");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -362,6 +432,9 @@ namespace PrivateHospitals.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "MedicalCard");
+
+            migrationBuilder.DropTable(
+                name: "DoctorInfos");
         }
     }
 }
