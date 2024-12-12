@@ -39,7 +39,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Resources\SqlQueries.Designer.cs">
+      <Compile Update="ResourcesSql\SqlQueries.Designer.cs">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>SqlQueries.resx</DependentUpon>
@@ -47,7 +47,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="Resources\SqlQueries.resx">
+      <EmbeddedResource Update="ResourcesSql\SqlQueries.resx">
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>SqlQueries.Designer.cs</LastGenOutput>
       </EmbeddedResource>

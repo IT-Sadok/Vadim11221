@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PrivateHospitals.Infrastructure.Resources {
+namespace PrivateHospitals.Infrastructure.ResourcesSql {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace PrivateHospitals.Infrastructure.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PrivateHospitals.Infrastructure.Resources.SqlQueries", typeof(SqlQueries).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PrivateHospitals.Infrastructure.ResourcesSql.SqlQueries", typeof(SqlQueries).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

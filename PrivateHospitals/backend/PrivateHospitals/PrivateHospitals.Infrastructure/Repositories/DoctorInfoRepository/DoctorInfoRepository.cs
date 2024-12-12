@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using PrivateHospitals.Core.Models.Users;
 using PrivateHospitals.Infrastructure.Interfaces.DoctorInfoInterface;
-using PrivateHospitals.Infrastructure.Loader;
+using PrivateHospitals.Infrastructure.ResourcesSql;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,22 +15,19 @@ namespace PrivateHospitals.Infrastructure.Repositories.DoctorInfoRepository
     public class DoctorInfoRepository : IDoctorInfoRepository
     {
         private readonly IDbConnection _dbConnection;
-        private readonly SqlQueryLoader _queryLoader;
 
-        public DoctorInfoRepository(IDbConnection dbConnection, SqlQueryLoader queryLoader)
+        public DoctorInfoRepository(IDbConnection dbConnection)
         {
             _dbConnection = dbConnection;
-            _queryLoader = queryLoader;
         }
 
         public async Task<bool> UpsertDoctorInfo(DoctorInfo doctorInfo)
         {
-            var doctorExistQuery = _queryLoader.GetQuery("DoctorExists");
-            var existDoctor = await _dbConnection.QueryFirstAsync<bool>(doctorExistQuery, new { doctorInfo.DoctorInfoId });
+            var existDoctor = await _dbConnection.QueryFirstAsync<bool>(SqlQueries.DoctorExists, new { doctorInfo.DoctorInfoId });
 
             if (!existDoctor)
             {
-                var insertQuery = _queryLoader.GetQuery("InsertDoctorInfo");
+                var insertQuery = SqlQueries.InsertDoctorInfo;
                 await _dbConnection.ExecuteAsync(insertQuery, new
                 {
                     DoctorId = doctorInfo.DoctorInfoId,
@@ -46,7 +43,7 @@ namespace PrivateHospitals.Infrastructure.Repositories.DoctorInfoRepository
             }
             else
             {
-                var updateQuery = _queryLoader.GetQuery("UpdateDoctorInfo");
+                var updateQuery = SqlQueries.UpdateDoctorInfo;
                 await _dbConnection.ExecuteAsync(updateQuery, new
                 {
                     DoctorId = doctorInfo.DoctorInfoId,

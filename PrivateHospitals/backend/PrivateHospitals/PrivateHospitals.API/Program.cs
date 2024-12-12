@@ -29,7 +29,6 @@ using PrivateHospitals.Infrastructure.Interfaces.DoctorInfoInterface;
 using PrivateHospitals.Infrastructure.Interfaces.Patient;
 using PrivateHospitals.Infrastructure.Interfaces.Statistics;
 using PrivateHospitals.Infrastructure.Interfaces.User;
-using PrivateHospitals.Infrastructure.Loader;
 using PrivateHospitals.Infrastructure.Repositories.Appointment;
 using PrivateHospitals.Infrastructure.Repositories.Doctor;
 using PrivateHospitals.Infrastructure.Repositories.DoctorInfoRepository;
@@ -133,7 +132,6 @@ builder.Services.AddScoped<IStatisticsRepository, StatisticsRepository>();
 builder.Services.AddScoped<IStatisticsService, StatisticsService>();
 builder.Services.AddScoped<IDoctorInfoRepository, DoctorInfoRepository>();
 builder.Services.AddScoped<IDoctorInfoService, DoctorInfoService>();
-builder.Services.AddScoped<SqlQueryLoader>();
 builder.Services.AddScoped<IDbConnection>(x =>
 {
     var connectionString = x.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection");
