@@ -12,7 +12,7 @@ public class Doctor: AppUser
     public DoctorSpecialities DoctorSpeciality { get; set; }
     public double YearsOfExperience { get; set; } = 1;
 
-    public List<MedicalCard> PatientsMedicalCards{ get; set; }
+    public List<MedicalCard>? PatientsMedicalCards{ get; set; }
     
     public List<Appointment>? Appointments { get; set; }
 

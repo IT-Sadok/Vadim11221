@@ -50,6 +50,7 @@ public class UserServiceTests
         var registerDto = new RegisterDto()
         {
             FirstName = "Joe",
+            CompanyId = "sdfg",
             LastName = "Doctor",
             UserName = "JoeDoctor",
             Email = "joe.doctor@gmail.com",
@@ -75,6 +76,7 @@ public class UserServiceTests
         var registerDto = new RegisterDto()
         {
             FirstName = "Joe",
+            CompanyId = "dfff",
             LastName = "Patient",
             UserName = "JoePatient",
             Email = "joe.patient@gmail.com",
@@ -101,6 +103,7 @@ public class UserServiceTests
         var registerDto = new RegisterDto()
         {
             FirstName = "Joe",
+            CompanyId = "werdfg",
             LastName = "Doctor",
             UserName = "JoeDoctor",
             Email = "joe.doctor@gmail.com",
