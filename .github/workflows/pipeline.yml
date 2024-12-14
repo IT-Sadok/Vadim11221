@@ -23,7 +23,7 @@ jobs:
           dotnet-version: '8.0'
 
       - name: Build project
-        run: dotnet build backend/PrivateHospitals/PrivateHospitals.sln --no-restore
+        run: dotnet build D:\.NetEducation\HospitalAnothe\Vadim112281\PrivateHospitals\backend\PrivateHospitals --no-restore
 
   docker: 
     runs-on: ubuntu-latest
