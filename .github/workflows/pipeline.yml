@@ -28,6 +28,13 @@ jobs:
       - name: Build project
         run: dotnet build PrivateHospitals/backend/PrivateHospitals/PrivateHospitals.sln --no-restore
 
+      - name: Create test results directory
+        run: mkdir -p ./test-results/unit
+
+      - name: Run Unit Tests
+        run: |
+          dotnet test ./tests/UnitTests/UnitTests.csproj --logger "html" --results-directory ./test-results/unit
+
   docker: 
     runs-on: ubuntu-latest
     needs: build
