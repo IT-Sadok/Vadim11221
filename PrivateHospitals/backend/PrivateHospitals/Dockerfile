@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Копіюємо всю папку backend/PrivateHospitals
-COPY bPrivateHospitals/backend/PrivateHospitals .
+COPY PrivateHospitals/backend/PrivateHospitals .
 
 # Відновлюємо залежності
 RUN dotnet restore PrivateHospitals.sln
