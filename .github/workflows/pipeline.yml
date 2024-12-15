@@ -29,18 +29,24 @@ jobs:
         run: dotnet build PrivateHospitals/backend/PrivateHospitals/PrivateHospitals.sln --no-restore
 
       - name: Create test results directory
-        run: mkdir -p ./test-results/unit
+        run: mkdir -p ./test-results/unit      
 
       - name: Run Unit Tests
         run: |
           dotnet test PrivateHospitals/backend/PrivateHospitals/PrivateHospitals.Tests/PrivateHospitals.Tests.csproj --logger "html" --results-directory ./test-results/unit
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Test-Reports
+          path: ./test-results/  
 
   docker: 
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-      - name: Checkout code
+      - name: Checkout code 
         uses: actions/checkout@v3
 
       - name: Login to DockerHub
