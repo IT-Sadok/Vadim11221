@@ -33,7 +33,7 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          dotnet test ./tests/UnitTests/UnitTests.csproj --logger "html" --results-directory ./test-results/unit
+          dotnet test PrivateHospitals/backend/PrivateHospitals/PrivateHospitals.Tests/PrivateHospitals.Tests.csproj --logger "html" --results-directory ./test-results/unit
 
   docker: 
     runs-on: ubuntu-latest
