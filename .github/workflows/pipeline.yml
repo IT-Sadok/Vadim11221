@@ -52,17 +52,16 @@ jobs:
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
+      - name: Set Docker Image Tag
+        id: vars
+        run: echo "tag=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       - name: Build Docker Image
-        run: docker build -t vadim112281/private-hospitals:latest -f PrivateHospitals/backend/PrivateHospitals/Dockerfile .
+        run: |
+          docker build -t vadim112281/private-hospitals:${{ env.tag }} -f PrivateHospitals/backend/PrivateHospitals/Dockerfile .
+          docker tag vadim112281/private-hospitals:${{ env.tag }} vadim112281/private-hospitals:latest
       
       - name: Push Docker image
-        run: docker push vadim112281/private-hospitals:latest
-
-    
-  
-
-
-
-
-      
-  
+        run: |
+          docker push vadim112281/private-hospitals:${{ env.tag }}
+          docker push vadim112281/private-hospitals:latest
